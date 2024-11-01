@@ -17,11 +17,17 @@ Installation des dépendances prod
 ````shell
 yarn install 
 ````
+## Having database and other
+
+````shell
+docker compose -f .\docker-compose.dev.yml up -d
+````
+
 ## Running dev server
 ````shell
 node ace serve --hmr
 ````
-Disponible via http://localhost:3000
+Disponible via http://localhost:3333
 
 ## Tests
 ````shell

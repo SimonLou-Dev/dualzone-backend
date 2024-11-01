@@ -1,4 +1,5 @@
 import { defineConfig } from '@adonisjs/core/app'
+import { BaseModel, CamelCaseNamingStrategy } from '@adonisjs/lucid/orm'
 
 // @ts-ignore
 // @ts-ignore
@@ -84,3 +85,5 @@ export default defineConfig({
     forceExit: false,
   },
 })
+
+BaseModel.namingStrategy = new CamelCaseNamingStrategy()
