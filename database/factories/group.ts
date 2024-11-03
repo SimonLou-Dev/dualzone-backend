@@ -2,10 +2,9 @@ import Factory from '@adonisjs/lucid/factories'
 import Group from '#models/group'
 import { UserFactory } from '#database/factories/user'
 
-export const GroupFactory = Factory
-  .define(Group, ({ faker }) => {
+export const GroupFactory = Factory.define(Group, ({ faker }) => {
   return {
-    size: 1,
+    size: faker.number.int({ min: 1, max: 5 }),
   }
 })
   .relation('leader', () => UserFactory)

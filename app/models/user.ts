@@ -4,8 +4,7 @@ import { DbAccessTokensProvider } from '@adonisjs/auth/access_tokens'
 import { randomUUID } from 'node:crypto'
 
 export default class User extends BaseModel {
-
-  @column({ isPrimary: true})
+  @column({ isPrimary: true })
   declare id: string
 
   @column()

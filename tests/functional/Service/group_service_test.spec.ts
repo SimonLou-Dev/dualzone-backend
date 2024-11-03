@@ -1,14 +1,13 @@
 import { test } from '@japa/runner'
-import GroupService from '#services/System/GroupService'
 import emitter from '@adonisjs/core/services/emitter'
 import GroupCreated from '#events/playerManager/group_created'
 import GroupMemberJoin from '#events/playerManager/group_member_join'
-import { GroupFactory } from '#database/factories/group'
-import { UserFactory } from '#database/factories/user'
 import User from '#models/user'
 import GroupMemberLeave from '#events/playerManager/group_member_leave'
 import GroupLeaderChange from '#events/playerManager/group_leader_change'
 import GroupDelete from '#events/playerManager/group_delete'
+import Group from '#models/group'
+import GroupService from '#services/system/group_service'
 
 const michelSteamId = '4563'
 const benoitSteamId = '87516'
@@ -35,7 +34,7 @@ const benoit = await User.firstOrCreate(
   }
 )
 
-let group = null
+let group = new Group()
 
 test.group('Service Player Management grouping system', () => {
   //Test if we can create group
@@ -57,7 +56,6 @@ test.group('Service Player Management grouping system', () => {
     cleanup(() => {
       emitter.restore()
     })
-
     await GroupService.addMember(group, benoit)
 
     event.assertEmitted(GroupMemberJoin)

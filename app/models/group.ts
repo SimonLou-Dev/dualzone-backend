@@ -1,9 +1,8 @@
 import { DateTime } from 'luxon'
-import {BaseModel, beforeCreate, belongsTo, column, manyToMany} from '@adonisjs/lucid/orm'
+import { BaseModel, beforeCreate, belongsTo, column, manyToMany } from '@adonisjs/lucid/orm'
 import User from '#models/user'
 import * as relations from '@adonisjs/lucid/types/relations'
-import {randomUUID} from "node:crypto";
-
+import { randomUUID } from 'node:crypto'
 
 export default class Group extends BaseModel {
   static selfAssignPrimaryKey = true

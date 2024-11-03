@@ -1,8 +1,7 @@
 import Factory from '@adonisjs/lucid/factories'
 import User from '#models/user'
 
-export const UserFactory = Factory
-  .define(User, async ({ faker }) => {
+export const UserFactory = Factory.define(User, async ({ faker }) => {
   return {
     userImage: faker.image.avatar(),
     pseudo: faker.internet.username(),
@@ -10,5 +9,4 @@ export const UserFactory = Factory
     steamToken: faker.internet.jwt(),
     id: faker.string.uuid(),
   }
-})
-  .build()
+}).build()
