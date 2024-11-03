@@ -72,7 +72,7 @@ Disponible via http://localhost:3333
 ## Tests
 
 ```shell
-node ace test
+yarn run test
 ```
 
 ## Lint
@@ -80,7 +80,7 @@ node ace test
 Runs ESLint
 
 ```shell
-yarn run  lint
+yarn run lint --fix
 ```
 
 Runs prettier

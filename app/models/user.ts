@@ -33,7 +33,7 @@ export default class User extends BaseModel {
   })
 
   @beforeCreate()
-  static assignUuid(user: User) {
-    user.id = randomUUID()
+  public static async createUUID(model: User) {
+    model.id = randomUUID()
   }
 }

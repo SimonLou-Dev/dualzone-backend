@@ -6,8 +6,8 @@ export default class extends BaseSchema {
   async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id').primary()
-      table.uuid('user_id').unsigned().references('id').inTable('users')
-      table.uuid('group_id').unsigned().references('id').inTable('groups')
+      table.uuid('user_id').unsigned().references('id').inTable('users').onDelete('CASCADE')
+      table.uuid('group_id').unsigned().references('id').inTable('groups').onDelete('CASCADE')
       table.unique(['user_id', 'group_id'])
       table.timestamp('created_at')
       table.timestamp('updated_at')

@@ -6,7 +6,7 @@ export default class extends BaseSchema {
   async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id').primary()
-      table.uuid('group_id').notNullable().unique().references('id').inTable('groups')
+      table.uuid('group_id').notNullable().unique().references('id').inTable('groups').onDelete('CASCADE')
       table.integer('game_mode_id').unsigned().references('id').inTable('game_modes')
       table.integer('avg_elo').notNullable()
       table.integer('min_elo').notNullable()

@@ -7,6 +7,7 @@ import GroupCreated from '#events/playerManager/group_created'
 import GroupMemberJoin from '#events/playerManager/group_member_join'
 import GroupMemberLeave from '#events/playerManager/group_member_leave'
 import GroupLeaderChange from '#events/playerManager/group_leader_change'
+import GroupDelete from "#events/playerManager/group_delete";
 
 export default class GroupService {
   public static async createGroup(leader: User) {
@@ -33,7 +34,7 @@ export default class GroupService {
   }
 
   public static async removeMember(group: Group, member: User) {
-    if (await this.playerIsGrouped(member)) throw new PlayerIsNotGroupedException(member)
+    if (!(await this.playerIsGrouped(member))) throw new PlayerIsNotGroupedException(member)
     await group.related('members').detach([member.id])
 
     group.size -= 1
@@ -53,6 +54,7 @@ export default class GroupService {
 
   public static async deleteGroup(group: Group) {
     await group.delete()
+    await GroupDelete.dispatch(group)
   }
 
   public static async getGroupOfPlayer(player: User): Promise<User | null> {
@@ -73,9 +75,9 @@ export default class GroupService {
 
   private static async playerIsInSameGroup(user: User, group: Group): Promise<boolean> {
     const check = await Group.query()
-      .where('users.id', group.id)
+      .where('groups.id', group.id)
       .whereHas('members', (membersQ) => {
-        membersQ.where('id', user.id)
+        membersQ.where('users.id', user.id)
       })
     return check.length !== 0
   }
