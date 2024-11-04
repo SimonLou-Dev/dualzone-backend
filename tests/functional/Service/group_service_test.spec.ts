@@ -6,14 +6,9 @@ import User from '#models/user'
 import GroupMemberLeave from '#events/playerManager/group_member_leave'
 import GroupLeaderChange from '#events/playerManager/group_leader_change'
 import GroupDelete from '#events/playerManager/group_delete'
-import Group from '#models/group'
 import GroupService from '#services/system/group_service'
 import { GroupFactory } from '#database/factories/group'
 import { UserFactory } from '#database/factories/user'
-// @ts-ignore
-import logger from '@adonisjs/core/services/logger'
-import PlayerAlreadyGroupedException from "#exceptions/Service/PlayerManagement/player_already_grouped_exception";
-import PlayerIsNotGroupedException from "#exceptions/Service/PlayerManagement/player_is_not_grouped_exception";
 
 test.group('Service Player Management grouping system - normal', () => {
   //Test if we can create group
@@ -91,11 +86,28 @@ test.group('Service Player Management grouping system - normal', () => {
 
     event.assertEmitted(GroupDelete)
   })
+
+  test('get group of player in group', async ({ assert }) => {
+    let GroupGetterPlayer = await GroupFactory.with('leader').with('members', 2).create()
+    // @ts-ignore
+    let UserGroupGetterPlayer: User = GroupGetterPlayer.$preloaded.members[1]
+
+    let grp = await GroupService.getGroupOfPlayer(UserGroupGetterPlayer)
+
+    assert.isTrue(grp !== null && grp.id === GroupGetterPlayer.id)
+  })
+
+  test('get group of player not groupped', async ({ assert }) => {
+    let UserNotGroupGetterPlayer: User = await UserFactory.create()
+
+    let grp = await GroupService.getGroupOfPlayer(UserNotGroupGetterPlayer)
+
+    assert.isTrue(grp === null)
+  })
 })
 
 test.group('Service Player Management grouping system - enforcing', () => {
   //Test if we can create group
-
   test('Create group but leader is already groupped', async ({ cleanup, assert }) => {
     const event = emitter.fake()
     cleanup(() => {
@@ -111,12 +123,15 @@ test.group('Service Player Management grouping system - enforcing', () => {
     try {
       await GroupService.createGroup(UserGroupCreateEnforceing)
     } catch (error) {
-      assert.isTrue(error.name === "PlayerAlreadyGroupedException")
+      assert.isTrue(error.name === 'PlayerAlreadyGroupedException')
     }
 
     //Assert event of group  creation and player join was emitted
+    event.assertNotEmitted(GroupMemberLeave)
     event.assertNotEmitted(GroupCreated)
     event.assertNotEmitted(GroupMemberJoin)
+    event.assertNotEmitted(GroupLeaderChange)
+    event.assertNotEmitted(GroupDelete)
   })
 
   test('Join group but user is already groupped', async ({ cleanup, assert }) => {
@@ -135,11 +150,15 @@ test.group('Service Player Management grouping system - enforcing', () => {
     try {
       await GroupService.addMember(JoiningGroupEnforcing, UserJoinerGroupEnforcing)
     } catch (error) {
-      assert.isTrue(error.name === "PlayerAlreadyGroupedException")
+      assert.isTrue(error.name === 'PlayerAlreadyGroupedException')
     }
 
     //Assert event of group  creation and player join was emitted
+    event.assertNotEmitted(GroupMemberLeave)
+    event.assertNotEmitted(GroupCreated)
     event.assertNotEmitted(GroupMemberJoin)
+    event.assertNotEmitted(GroupLeaderChange)
+    event.assertNotEmitted(GroupDelete)
   })
 
   test('Leave group but user is not groupped', async ({ cleanup, assert }) => {
@@ -152,17 +171,19 @@ test.group('Service Player Management grouping system - enforcing', () => {
     let UserLeaverGroupEnforcing = await UserFactory.create()
     let LeaverGroupEnforcing = await GroupFactory.with('leader').with('members', 1).create()
 
-
-
     //Request group creation
     try {
       await GroupService.removeMember(LeaverGroupEnforcing, UserLeaverGroupEnforcing)
     } catch (error) {
-      assert.isTrue(error.name === "PlayerIsNotGroupedException")
+      assert.isTrue(error.name === 'PlayerIsNotGroupedException')
     }
 
     //Assert event of group  creation and player join was emitted
     event.assertNotEmitted(GroupMemberLeave)
+    event.assertNotEmitted(GroupCreated)
+    event.assertNotEmitted(GroupMemberJoin)
+    event.assertNotEmitted(GroupLeaderChange)
+    event.assertNotEmitted(GroupDelete)
   })
 
   test('Change Leader but not groupped', async ({ cleanup, assert }) => {
@@ -175,19 +196,21 @@ test.group('Service Player Management grouping system - enforcing', () => {
     let UserLeaverGroupEnforcing = await UserFactory.create()
     let LeaverGroupEnforcing = await GroupFactory.with('leader').with('members', 1).create()
 
-
-
     //Request group creation
     try {
       await GroupService.changeLeader(LeaverGroupEnforcing, UserLeaverGroupEnforcing)
     } catch (error) {
-      assert.isTrue(error.name === "PlayerIsNotInSameGroupException")
+      assert.isTrue(error.name === 'PlayerIsNotInSameGroupException')
     }
 
     //Assert event of group  creation and player join was emitted
     event.assertNotEmitted(GroupMemberLeave)
+    event.assertNotEmitted(GroupCreated)
+    event.assertNotEmitted(GroupMemberJoin)
+    event.assertNotEmitted(GroupLeaderChange)
+    event.assertNotEmitted(GroupDelete)
   })
-  /*
+
   test('Change Leader but in other group', async ({ cleanup, assert }) => {
     const event = emitter.fake()
     cleanup(() => {
@@ -201,20 +224,18 @@ test.group('Service Player Management grouping system - enforcing', () => {
     // @ts-ignore
     let ChangeUserLeaver1GroupEnforcing: User = ChangeLeaver1GroupEnforcing.$preloaded.members[0]
 
-
-
     //Request group creation
     try {
-      await GroupService.removeMember(ChangeLeaverGroupEnforcing, ChangeUserLeaver1GroupEnforcing)
+      await GroupService.changeLeader(ChangeLeaverGroupEnforcing, ChangeUserLeaver1GroupEnforcing)
     } catch (error) {
-      assert.isTrue(error.name === "PlayerIsNotInSameGroupException")
+      assert.isTrue(error.name === 'PlayerIsNotInSameGroupException')
     }
 
     //Assert event of group  creation and player join was emitted
     event.assertNotEmitted(GroupMemberLeave)
+    event.assertNotEmitted(GroupCreated)
+    event.assertNotEmitted(GroupMemberJoin)
+    event.assertNotEmitted(GroupLeaderChange)
+    event.assertNotEmitted(GroupDelete)
   })
-   */
-
-
-
 })

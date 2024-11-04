@@ -7,7 +7,7 @@ import GroupCreated from '#events/playerManager/group_created'
 import GroupMemberJoin from '#events/playerManager/group_member_join'
 import GroupMemberLeave from '#events/playerManager/group_member_leave'
 import GroupLeaderChange from '#events/playerManager/group_leader_change'
-import GroupDelete from "#events/playerManager/group_delete";
+import GroupDelete from '#events/playerManager/group_delete'
 
 export default class GroupService {
   public static async createGroup(leader: User) {
@@ -34,7 +34,9 @@ export default class GroupService {
   }
 
   public static async removeMember(group: Group, member: User) {
-    if (!(await this.playerIsGrouped(member))) throw new PlayerIsNotGroupedException(member)
+    if (!(await this.playerIsGrouped(member))) {
+      throw new PlayerIsNotGroupedException(member)
+    }
     await group.related('members').detach([member.id])
 
     group.size -= 1
@@ -44,8 +46,9 @@ export default class GroupService {
 
   public static async changeLeader(group: Group, newLeader: User) {
     if (newLeader.id === group.leaderId) return
-    if (!(await this.playerIsInSameGroup(newLeader, group)))
+    if (!(await this.playerIsInSameGroup(newLeader, group))) {
       throw new PlayerIsNotInSameGroupException(newLeader)
+    }
 
     await group.related('leader').dissociate()
     await group.related('leader').associate(newLeader)
@@ -57,12 +60,14 @@ export default class GroupService {
     await GroupDelete.dispatch(group)
   }
 
-  public static async getGroupOfPlayer(player: User): Promise<User | null> {
-    let user = await Group.query().whereHas('members', (membersQ) => {
-      membersQ.where('users.id', player.id)
-    })
+  public static async getGroupOfPlayer(player: User): Promise<Group | null> {
+    let group = await Group.query()
+      .whereHas('members', (membersQ) => {
+        membersQ.where('users.id', player.id)
+      })
+      .first()
     // @ts-ignore
-    return user
+    return group
   }
 
   private static async playerIsGrouped(user: User): Promise<boolean> {
