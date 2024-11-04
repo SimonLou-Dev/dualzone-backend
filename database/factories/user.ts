@@ -6,6 +6,6 @@ export const UserFactory = Factory.define(User, async ({ faker }) => {
     userImage: faker.image.avatar(),
     pseudo: faker.internet.username(),
     steamId: faker.string.hexadecimal({ length: 18 }),
-    steamToken: faker.string.alphanumeric({length: 20}),
+    steamToken: faker.string.alphanumeric({ length: 20 }),
   }
 }).build()

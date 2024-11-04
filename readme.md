@@ -1,11 +1,12 @@
 # /!\ Avant chaque push /!\
+
 Surtout si c'est le dernier de votre feature & hotfix
 Commandes de la partie [lint](#Lint) obligatoires
 <br>
 <br>
-Si c'est le dernier commit  tous les tests doivent passer
+Si c'est le dernier commit tous les tests doivent passer
 
-#  Liste des branchs
+# Liste des branchs
 
 - dev : branch globale de deb
 - feature/ : ajout d'un élément (environnement de dev)
@@ -14,29 +15,35 @@ Si c'est le dernier commit  tous les tests doivent passer
 - testing : environnement evo
 - prod : Plateforme en production
 
-# Travailler sur une nouvelle  feature
+# Travailler sur une nouvelle feature
+
 ## Création de la branch
-````shell
+
+```shell
 git branch feature/nomDeLaFeature
 git switch feature/nomDeLaFeature
-````
+```
 
 ## Push de la branch
-````shell
+
+```shell
 git push -u origin feature/nomDeLaFeature
-````
+```
 
 ## Récupération d'un branch distante
-````shell
+
+```shell
 git fetch origin
 git checkout feature/nomDeLaFeature
 git pull
-````
+```
 
 # Outils de devs
+
 **Installation de [node](https://nodejs.org/en/) > vv22.0.0**
 
 Installation de yarn
+
 ```shell
 npm install --global yarn
 ```
@@ -89,8 +96,10 @@ Runs prettier
 yarn run format
 ```
 
-Typechecj
+Typecheck
 
 ```shell
 yarn run typecheck
 ```
+
+**Penser à refaire vos tests après on sait jamais**

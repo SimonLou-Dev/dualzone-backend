@@ -5,7 +5,7 @@ export default class extends BaseSchema {
 
   async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.uuid('id', {primaryKey: true}).primary().index()
+      table.uuid('id', { primaryKey: true }).primary().index()
       table.string('pseudo').notNullable()
       table.string('steam_id').notNullable().unique()
       table.string('steam_token').notNullable()

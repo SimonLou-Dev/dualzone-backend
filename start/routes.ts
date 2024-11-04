@@ -14,4 +14,3 @@ router.get('/', async () => {
     hello: 'world',
   }
 })
-
