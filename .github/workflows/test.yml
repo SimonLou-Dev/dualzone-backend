@@ -25,6 +25,8 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+      redis:
+        image: redis:6.2-alpine
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -62,8 +64,8 @@ jobs:
           SMTP_PORT: test
           MAILGUN_API_KEY: test
           MAILGUN_DOMAIN: test
-          REDIS_HOST: 127.0.0.1
+          REDIS_HOST: redis
           REDIS_PORT: 6379
-          REDIS_PASSWORD: dualzone
+          REDIS_PASSWORD: test
           DISCORD_CLIENT_ID: test
           DISCORD_CLIENT_SECRET: test
