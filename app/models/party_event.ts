@@ -1,14 +1,20 @@
 import { DateTime } from 'luxon'
 import { BaseModel, belongsTo, column } from '@adonisjs/lucid/orm'
-import Game from '#models/game'
+import Party from '#models/party'
 import * as relations from '@adonisjs/lucid/types/relations'
 
-export default class GameMode extends BaseModel {
+export default class PartyEvent extends BaseModel {
   @column({ isPrimary: true })
   declare id: number
 
   @column()
-  declare gameId: number
+  declare name: string
+
+  @column()
+  declare content: string
+
+  @column()
+  declare partyId: string
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
@@ -16,6 +22,6 @@ export default class GameMode extends BaseModel {
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
 
-  @belongsTo(() => Game)
-  declare game: relations.BelongsTo<typeof Game>
+  @belongsTo(() => Party)
+  declare party: relations.BelongsTo<typeof Party>
 }

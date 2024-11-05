@@ -6,7 +6,7 @@ import User from '#models/user'
 import GroupMemberLeave from '#events/playerManager/group_member_leave'
 import GroupLeaderChange from '#events/playerManager/group_leader_change'
 import GroupDelete from '#events/playerManager/group_delete'
-import GroupService from '#services/system/group_service'
+import GroupService from '#services/playerManagement/group_service'
 import { GroupFactory } from '#database/factories/group'
 import { UserFactory } from '#database/factories/user'
 
