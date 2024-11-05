@@ -102,4 +102,4 @@ Typecheck
 yarn run typecheck
 ```
 
-**Penser à refaire vos tests après on sait jamais**
+**Pensez à refaire vos tests après on sait jamais**

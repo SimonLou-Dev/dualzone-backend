@@ -10,4 +10,10 @@ export default class Game extends BaseModel {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
+
+  @column()
+  declare name: string
+
+  @column()
+  declare description: string
 }

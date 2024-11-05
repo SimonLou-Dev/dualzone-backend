@@ -8,6 +8,7 @@ export default class extends BaseSchema {
       table.increments('id')
       table.uuid('user_id').notNullable().references('id').inTable('users')
       table.integer('game_id').notNullable().references('id').inTable('games')
+      table.float('rank').nullable().defaultTo(null)
       table.timestamp('created_at')
       table.timestamp('updated_at')
     })
