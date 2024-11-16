@@ -1,8 +1,6 @@
 import Permission from '#models/permission'
 import RoleService from '#services/playerManagement/role_service'
 import User from '#models/user'
-import Role from '#models/role'
-import logger from '@adonisjs/core/services/logger'
 
 export default class PermissionService {
   private static wildcard = '*'
@@ -10,21 +8,31 @@ export default class PermissionService {
   private static scopeWildcard = this.scope + this.wildcard
 
   public static async userCan(user: User, ...perms: string[]): Promise<boolean> {
+    //Initializing vars
     let userMustHaveperms: Permission[] = []
     let userHasRight = false
 
+    //Resolve required perms
     for (const perm of perms) {
-      userMustHaveperms.concat(await this.resolvPerm(perm))
+      userMustHaveperms = userMustHaveperms.concat(await this.resolvPerm(perm))
     }
+    //Check if resolved perms has a size
     if (userMustHaveperms.length === 0) return false
+    //Retrieve user perms
     const userPerms: Permission[] = await this.fetchUserPerms(user)
 
+    //Check if user has at least 1 perm
     if (userPerms.length === 0) return false
+    //Check for wildcar perm
+    let userHasWildcard = userPerms.find((o) => o.name === '*') !== undefined
+    if (userHasWildcard) return true
 
+    //Check perm One by One
     for (const reqPerm of userMustHaveperms) {
-      let test = userPerms.find((o) => o.name === reqPerm.name)
-      if (test === null) return false
-      else userHasRight = true
+      let test = userPerms.find((o) => o.id === reqPerm.id)
+
+      if (test !== undefined) userHasRight = true
+      else return false
     }
 
     return userHasRight
@@ -53,7 +61,7 @@ export default class PermissionService {
       perms = perms.concat(await Permission.query().where('name', this.wildcard))
     else if (perm.endsWith(this.scopeWildcard))
       perms = perms.concat(
-        await Permission.query().whereLike('name', perm.replace(this.scopeWildcard, ''))
+        await Permission.query().whereLike('name', perm.replace(this.scopeWildcard, '%'))
       )
     else perms = perms.concat(await Permission.query().where('name', perm))
 
@@ -65,7 +73,7 @@ export default class PermissionService {
 
     let perms: Permission[] = []
     const roles = await RoleService.getUserRoles(user)
-    roles.map(async (role) => perms.concat(await RoleService.getRolePerm(role)))
+    for (const role of roles) perms = perms.concat(await RoleService.getRolePerm(role))
 
     return perms
   }

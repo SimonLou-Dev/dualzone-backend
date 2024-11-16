@@ -5,7 +5,7 @@ export default class UserRolesChanged extends BaseEvent {
   /**
    * Accept event data as constructor parameters
    */
-  constructor(user: User) {
+  constructor(public user: User) {
     super()
   }
 }

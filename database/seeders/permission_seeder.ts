@@ -5,7 +5,26 @@ import RoleService from '#services/playerManagement/role_service'
 
 export default class extends BaseSeeder {
   async run() {
+    /*
+     *
+     * Dans ce fichier nous pouvons déclarer les roles et les permissions
+     *
+     */
+
+    //Création des roles
     await this.createRoles('user', 'moderator', 'administrator')
+    //Récupération des roles
+    const admin = await Role.findBy('name', 'administrator')
+    const user = await Role.findBy('name', 'user')
+    const modo = await Role.findBy('name', 'moderator')
+    if (user === null || modo === null || admin === null) return
+
+    /*
+     * Création des permissions
+     * Cette list doit être exhaustive
+     * Elle doit contenir le wildcard global (*)
+     * Mais elle ne doit pas contenir les wildcard scopé (ticket:*)
+     */
     await this.createPerms(
       '*',
       'ticket:viewAll',
@@ -15,15 +34,10 @@ export default class extends BaseSeeder {
       'ticket:open'
     )
 
-    const user = await Role.findBy('name', 'user')
-    const modo = await Role.findBy('name', 'moderator')
-    const admin = await Role.findBy('name', 'administrator')
-
-    if (user === null || modo === null || admin === null) return
-
-    await RoleService.addPermsToRole(user, ['ticket:view', 'ticket:open'])
-    await RoleService.addPermToRole(modo, 'ticket:*')
-    await RoleService.addPermToRole(admin, '*')
+    //Assignation des permissions par role
+    await RoleService.addPermsToRole(admin, '*')
+    await RoleService.addPermsToRole(modo, 'ticket:*')
+    await RoleService.addPermsToRole(user, 'ticket:view', 'ticket:open')
   }
 
   async createPerms(...names: string[]) {

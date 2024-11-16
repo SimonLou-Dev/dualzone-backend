@@ -7,9 +7,13 @@ import RolesUpdated from '#events/Permissions/roles_updated'
 
 export default class RoleService {
   public static async setUserRole(user: User, role: Role) {
-    user.roles.map(async (cRole) => {
-      await user.related('roles').detach([cRole.id])
-    })
+    await user.load('roles')
+
+    const uRoles = await user.roles
+
+    for (const uRole of uRoles) {
+      await user.related('roles').detach([uRole.id])
+    }
     await user.related('roles').attach([role.id])
     await user.save()
     await UserRolesChanged.dispatch(user)
@@ -28,51 +32,39 @@ export default class RoleService {
   }
 
   public static async getUserRoles(user: User): Promise<Role[]> {
+    await user.load('roles')
     return user.roles
   }
 
   public static async getRolePerm(role: Role): Promise<Permission[]> {
+    await role.load('permissions')
     return role.permissions
   }
 
-  public static async addPermToRole(role: Role, perm: string) {
-    var perms = await PermissionService.getPermissionFromString(perm)
-    await role
-      .related('permissions')
-      .attach(PermissionService.getPermissionIdFromPermissionList(perms))
+  public static async addPermsToRole(role: Role, ...perms: string[]) {
+    for (const perm of perms) {
+      let permsModel = await PermissionService.getPermissionFromString(perm)
+
+      const permsId = PermissionService.getPermissionIdFromPermissionList(permsModel)
+
+      for (const item of permsId) {
+        await role.related('permissions').attach([item])
+      }
+    }
     await role.save()
     await RolesUpdated.dispatch(role)
   }
 
-  public static async addPermsToRole(role: Role, perms: string[]) {
-    let permsList: Permission[] = []
-    perms.map(async (perm) =>
-      permsList.concat(await PermissionService.getPermissionFromString(perm))
-    )
-    await role
-      .related('permissions')
-      .attach(PermissionService.getPermissionIdFromPermissionList(permsList))
-    await role.save()
-    await RolesUpdated.dispatch(role)
-  }
+  public static async removePermsToRole(role: Role, ...perms: string[]) {
+    for (const perm of perms) {
+      let permsModel = await PermissionService.getPermissionFromString(perm)
 
-  public static async removePermToRole(role: Role, perm: string) {
-    var perms = await PermissionService.getPermissionFromString(perm)
-    await role
-      .related('permissions')
-      .detach(PermissionService.getPermissionIdFromPermissionList(perms))
-    await role.save()
-    await RolesUpdated.dispatch(role)
-  }
+      const permsId = PermissionService.getPermissionIdFromPermissionList(permsModel)
 
-  public static async removePermsToRole(role: Role, perms: string[]) {
-    let permsList: Permission[] = []
-    perms.map(async (perm) =>
-      permsList.concat(await PermissionService.getPermissionFromString(perm))
-    )
-    await role
-      .related('permissions')
-      .detach(PermissionService.getPermissionIdFromPermissionList(permsList))
+      for (const item of permsId) {
+        await role.related('permissions').detach([item])
+      }
+    }
     await role.save()
     await RolesUpdated.dispatch(role)
   }
@@ -93,6 +85,4 @@ export default class RoleService {
     await role.save()
     await RolesUpdated.dispatch(role)
   }
-
-
 }
