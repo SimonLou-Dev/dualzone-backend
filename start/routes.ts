@@ -20,8 +20,8 @@ router.get('/', async () => {
 
 router.get('/auth/steam/authenticate', [UserAuthsController, 'steamCallback'])
 router.get('/auth/steam', [UserAuthsController, 'steamAuth'])
-router.get('/user/:id', [UserController, 'show'])/*.use(
+router.get('/user/:id', [UserController, 'show']).use(
   middleware.auth({
     guards: ['api'],
   })
-)*/
+)

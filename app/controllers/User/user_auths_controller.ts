@@ -6,15 +6,16 @@ import { dd } from '@adonisjs/core/services/dumper'
 import User from '#models/user'
 import RoleService from '#services/playerManagement/role_service'
 import Role from '#models/role'
+import env from '#start/env'
 
 export default class UserAuthsController {
   private steamAuthService: SteamAuthService
 
   constructor() {
     this.steamAuthService = new SteamAuthService({
-      apiKey: '72D84F637AE8308316E575A086792BC5',
-      realm: 'http://localhost:3333',
-      returnUrl: 'http://localhost:3333/auth/steam/authenticate',
+      apiKey: env.get('STEAM_API_KEY'),
+      realm: env.get('STEAM_REALM_NAME'),
+      returnUrl: env.get('STEAM_API_KEY'),
     })
   }
 
@@ -40,9 +41,8 @@ export default class UserAuthsController {
         await RoleService.setUserRole(findedUser, userRole)
       }
 
-      //TODO redirect to frontend with token in url params
-
-
+      const token = await User.accessTokens.create(findedUser)
+      return env.get('FRONT_APP_URL') + '?token=' + token.value!.release()
     } catch (e: any) {
       dd(e)
     }
