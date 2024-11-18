@@ -12,10 +12,13 @@ export default class UserRank extends BaseModel {
   declare userId: string
 
   @column()
-  declare gameId: string
+  declare gameId: number
 
   @column()
   declare rank: number
+
+  @column()
+  declare playedGames: number
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
