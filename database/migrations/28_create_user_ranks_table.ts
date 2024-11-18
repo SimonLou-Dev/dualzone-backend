@@ -9,7 +9,7 @@ export default class extends BaseSchema {
       table.uuid('user_id').notNullable().references('id').inTable('users')
       table.integer('played_games').nullable().defaultTo(0).unsigned()
       table.integer('game_id').notNullable().references('id').inTable('games')
-      table.float('rank').nullable().defaultTo(null)
+      table.float('rank').nullable().defaultTo(1000)
       table.timestamp('created_at')
       table.timestamp('updated_at')
     })
