@@ -1,8 +1,5 @@
 import openid, { RelyingParty } from 'openid'
 import axios from 'axios'
-import url, { UrlWithParsedQuery } from 'node:url'
-import { dd } from '@adonisjs/core/services/dumper'
-import querystring, { ParsedUrlQuery } from 'node:querystring'
 
 interface OpenidCheck {
   ns: string
