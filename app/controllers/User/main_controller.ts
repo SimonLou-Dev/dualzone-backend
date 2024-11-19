@@ -6,7 +6,7 @@ import { AccessToken } from '@adonisjs/auth/access_tokens'
 export default class MainController {
   public async current({ response, auth }: HttpContextContract) {
     const user: User = auth.getUserOrFail()
-    let token = await UserController.updateTokenExpiry(auth.user!.currentAccessToken, user)
+    let token = await MainController.updateTokenExpiry(auth.user!.currentAccessToken, user)
     user.load('friends')
     const permissions: string[] = []
     return response.json({
