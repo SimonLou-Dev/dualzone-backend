@@ -47,7 +47,7 @@ export default class RankService {
     else if (rank.playedGames > 5 && rank.playedGames <= 30) devCoef = 40
     else devCoef = 20
 
-    if (rank.rank >= 2400) devCoef /= 2
+    if (rank.rank >= 4400) devCoef /= 2
 
     return rank.rank + devCoef * (score - winProbability)
   }

@@ -10,6 +10,9 @@ import Sanction from '#models/sanction'
 import Report from '#models/report'
 
 export default class User extends BaseModel {
+
+
+
   @column({ isPrimary: true })
   declare id: string
 
@@ -18,9 +21,6 @@ export default class User extends BaseModel {
 
   @column()
   declare steamId: string
-
-  @column()
-  declare steamToken: string
 
   @column()
   declare trustScore: number
@@ -36,6 +36,7 @@ export default class User extends BaseModel {
 
   static accessTokens = DbAccessTokensProvider.forModel(User, {
     expiresIn: '30 days',
+    type: 'auth_token',
   })
 
   @beforeCreate()

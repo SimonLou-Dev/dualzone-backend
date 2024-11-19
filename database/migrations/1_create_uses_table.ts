@@ -8,7 +8,6 @@ export default class extends BaseSchema {
       table.uuid('id', { primaryKey: true }).primary().index()
       table.string('pseudo').notNullable()
       table.string('steam_id').notNullable().unique()
-      table.string('steam_token').notNullable()
       table.float('trust_score').notNullable().defaultTo(0.8)
       table.string('user_image').notNullable()
       table.timestamps()

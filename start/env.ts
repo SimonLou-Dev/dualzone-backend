@@ -68,4 +68,12 @@ export default await Env.create(new URL('../', import.meta.url), {
   */
   DISCORD_CLIENT_ID: Env.schema.string(),
   DISCORD_CLIENT_SECRET: Env.schema.string(),
+
+  STEAM_API_KEY: Env.schema.string(),
+
+  STEAM_REALM_NAME: Env.schema.string(),
+
+  STEAM_CALLBACK_URL: Env.schema.string(),
+
+  FRONT_APP_URL: Env.schema.string()
 })
