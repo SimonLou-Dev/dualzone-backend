@@ -31,7 +31,10 @@ export default class extends BaseSeeder {
       'ticket:view',
       'ticket:close',
       'ticket:write',
-      'ticket:open'
+      'ticket:open',
+      'user:view',
+      'user:list',
+      'user:edit'
     )
 
     //Assignation des permissions par role

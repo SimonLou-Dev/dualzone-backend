@@ -15,7 +15,7 @@ export default class UserAuthsController {
     this.steamAuthService = new SteamAuthService({
       apiKey: env.get('STEAM_API_KEY'),
       realm: env.get('STEAM_REALM_NAME'),
-      returnUrl: env.get('STEAM_API_KEY'),
+      returnUrl: env.get('STEAM_CALLBACK_URL'),
     })
   }
 

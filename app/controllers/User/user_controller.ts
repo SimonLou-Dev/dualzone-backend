@@ -1,34 +1,40 @@
 // @ts-ignore
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import User from '#models/user'
-import { AccessToken } from '@adonisjs/auth/access_tokens'
+import UserPolicy from '#policies/user_policy'
 
 export default class UserController {
-  public async show({ response, auth }: HttpContextContract) {
-    const user: User = auth.getUserOrFail()
-    let token = await UserController.updateTokenExpiry(auth.user!.currentAccessToken, user)
-    user.load('friends')
-    const permissions: string[] = []
-    return response.json({
-      token: {
-        value: token === null ? token : token.value!.release(),
-        type: 'bearer',
-      },
-      permissions,
-      user,
-    })
+  public static async index({ response, bouncer }: HttpContextContract) {
+    await bouncer.with(UserPolicy).authorize('viewAny')
+    const users = await User.all()
+    return response.json(users)
   }
 
-  private static async updateTokenExpiry(
-    accessToken: AccessToken,
-    user: User
-  ): Promise<AccessToken | null> {
-    if (
-      accessToken.expiresAt !== null &&
-      accessToken.expiresAt <= new Date(new Date().getTime() + 1000 * 60 * 60 * 24)
-    )
-      return await User.accessTokens.create(user)
+  public static async show({ response, params, bouncer }: HttpContextContract) {
+    const user = await User.find(params.id)
+    await bouncer.with(UserPolicy).authorize('view', user)
+    return response.json(user)
+  }
 
-    return null
+  public static async update({ request, response, params, bouncer }: HttpContextContract) {
+    const user = await User.findOrFail(params.id)
+    await bouncer.with(UserPolicy).authorize('update', user)
+    user.merge(request.body())
+    await user.save()
+    return response.json(user)
+  }
+
+  public static async destroy({ response, params, bouncer }: HttpContextContract) {
+    const user = await User.findOrFail(params.id)
+    await bouncer.with(UserPolicy).authorize('delete')
+    await user.delete()
+    return response.json(user)
+  }
+
+  public static async store({ request, response }: HttpContextContract) {
+    const user = new User()
+    user.merge(request.body())
+    await user.save()
+    return response.json(user)
   }
 }
