@@ -47,7 +47,7 @@ jobs:
           HOST: localhost
           LOG_LEVEL: info
           APP_KEY: lnmE_sX6-itM87W_GjSyT7W6HvdXqUwq
-          NODE_ENV: testing
+          NODE_ENV: test
           DB_HOST: postgres
           DB_PORT: 5432
           DB_USER: dualzone
