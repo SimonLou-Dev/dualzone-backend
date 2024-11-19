@@ -40,7 +40,7 @@ jobs:
         run: yarn install --include=dev
 
       - name: Run tests
-        run: yarn test
+        run: nohup yarn dev && yarn test
         env:
           TZ: UTC
           PORT: 3333
