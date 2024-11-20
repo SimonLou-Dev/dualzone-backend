@@ -20,11 +20,16 @@ export default class Ticket extends BaseModel {
   @column()
   declare terminated: boolean
 
+  @column()
+  declare senderId: string
+
   @belongsTo(() => User)
   declare sender: relations.BelongsTo<typeof User>
 
-  @hasMany(() => TicketMessage)
-  declare messages: relations.HasMany<typeof TicketMessage>
+  @manyToMany(() => TicketMessage, {
+    pivotTable: 'ticket_messages',
+  })
+  declare messages: relations.ManyToMany<typeof TicketMessage>
 
   @manyToMany(() => User, {
     pivotTable: 'ticket_has_users',
