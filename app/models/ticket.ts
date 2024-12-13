@@ -20,7 +20,12 @@ export default class Ticket extends BaseModel {
   @column()
   declare terminated: boolean
 
-  @belongsTo(() => User)
+  @column()
+  declare senderId: string
+
+  @belongsTo(() => User, {
+    foreignKey: 'senderId',
+  })
   declare sender: relations.BelongsTo<typeof User>
 
   @hasMany(() => TicketMessage)
@@ -28,6 +33,8 @@ export default class Ticket extends BaseModel {
 
   @manyToMany(() => User, {
     pivotTable: 'ticket_has_users',
+    pivotForeignKey: 'ticket_id',
+    pivotRelatedForeignKey: 'member_id',
   })
   declare members: relations.ManyToMany<typeof User>
 }
