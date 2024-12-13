@@ -23,16 +23,18 @@ export default class Ticket extends BaseModel {
   @column()
   declare senderId: string
 
-  @belongsTo(() => User)
+  @belongsTo(() => User, {
+    foreignKey: 'senderId',
+  })
   declare sender: relations.BelongsTo<typeof User>
 
-  @manyToMany(() => TicketMessage, {
-    pivotTable: 'ticket_messages',
-  })
-  declare messages: relations.ManyToMany<typeof TicketMessage>
+  @hasMany(() => TicketMessage)
+  declare messages: relations.HasMany<typeof TicketMessage>
 
   @manyToMany(() => User, {
     pivotTable: 'ticket_has_users',
+    pivotForeignKey: 'ticket_id',
+    pivotRelatedForeignKey: 'member_id',
   })
   declare members: relations.ManyToMany<typeof User>
 }
