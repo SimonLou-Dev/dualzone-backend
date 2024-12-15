@@ -2,11 +2,8 @@ import { Exception } from '@adonisjs/core/exceptions'
 import User from '#models/user'
 
 export default class PlayerAlreadyGroupedException extends Exception {
-  private _player: User
-
-  public constructor(player: User) {
-    super()
-    this._player = player
+  constructor(player: User) {
+    super(`Player ${player.id} is already grouped`)
   }
 
   static status = 500

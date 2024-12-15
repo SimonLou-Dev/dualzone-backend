@@ -73,4 +73,3 @@ jobs:
           STEAM_REALM_NAME: test
           STEAM_CALLBACK_URL: http://localhost:3333/auth/steam/authenticate
           FRONT_APP_URL: http://localhost:3000/
-

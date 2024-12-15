@@ -10,9 +10,6 @@ import Sanction from '#models/sanction'
 import Report from '#models/report'
 
 export default class User extends BaseModel {
-
-
-
   @column({ isPrimary: true })
   declare id: string
 

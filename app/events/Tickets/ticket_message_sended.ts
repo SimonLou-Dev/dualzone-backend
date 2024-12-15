@@ -6,7 +6,11 @@ export default class TicketMessageSended extends BaseEvent {
   /**
    * Accept event data as constructor parameters
    */
-  constructor(public ticket: Ticket, public sender: User, public message: string) {
+  constructor(
+    public ticket: Ticket,
+    public sender: User,
+    public message: string
+  ) {
     super()
   }
 }

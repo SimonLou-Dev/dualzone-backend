@@ -7,8 +7,11 @@ import User from '#models/user'
 import RoleService from '#services/playerManagement/role_service'
 import Role from '#models/role'
 import env from '#start/env'
+import { AccessToken } from '@adonisjs/auth/access_tokens'
+// @ts-ignore
+import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
-export default class UserAuthsController {
+export default class UserAuthController {
   private steamAuthService: SteamAuthService
 
   constructor() {
@@ -50,5 +53,33 @@ export default class UserAuthsController {
 
   private async checkUser(steamId: string): Promise<User | null> {
     return await User.findBy('steamId', steamId)
+  }
+
+  public async current({ response, auth }: HttpContextContract) {
+    const user: User = auth.getUserOrFail()
+    let token = await UserAuthController.updateTokenExpiry(auth.user!.currentAccessToken, user)
+    user.load('friends')
+    const permissions: string[] = []
+    return response.json({
+      token: {
+        value: token === null ? token : token.value!.release(),
+        type: 'bearer',
+      },
+      permissions,
+      user,
+    })
+  }
+
+  private static async updateTokenExpiry(
+    accessToken: AccessToken,
+    user: User
+  ): Promise<AccessToken | null> {
+    if (
+      accessToken.expiresAt !== null &&
+      accessToken.expiresAt <= new Date(new Date().getTime() + 1000 * 60 * 60 * 24)
+    )
+      return await User.accessTokens.create(user)
+
+    return null
   }
 }

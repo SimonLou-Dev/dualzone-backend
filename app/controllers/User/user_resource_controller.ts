@@ -3,7 +3,7 @@ import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import User from '#models/user'
 import UserPolicy from '#policies/user_policy'
 
-export default class UserController {
+export default class UserResourceController {
   async index({ response, bouncer }: HttpContextContract) {
     await bouncer.with(UserPolicy).authorize('viewAny')
     const users = await User.all()

@@ -69,8 +69,6 @@
     "@adonisjs/validator": "^13.0.2",
     "@aws-sdk/client-s3": "^3.682.0",
     "@aws-sdk/s3-request-presigner": "^3.682.0",
-    "@tuyau/core": "^0.2.1",
-    "@tuyau/openapi": "^1.0.0",
     "@vinejs/vine": "^2.1.0",
     "adonis-lucid-soft-deletes": "^2.1.0",
     "adonis-resque": "^2.0.2",
