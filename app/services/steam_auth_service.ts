@@ -1,6 +1,6 @@
 import openid, { RelyingParty } from 'openid'
 import axios from 'axios'
-import * as url from "node:url";
+import * as url from 'node:url'
 
 interface OpenidCheck {
   ns: string

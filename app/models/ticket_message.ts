@@ -23,7 +23,10 @@ export default class TicketMessage extends BaseModel {
   @column()
   declare senderId: string
 
-  @belongsTo(() => User)
+  @belongsTo(() => User, {
+    foreignKey: 'senderId',
+    localKey: 'id',
+  })
   declare sender: relations.BelongsTo<typeof User>
 
   @belongsTo(() => Ticket)

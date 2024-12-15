@@ -18,9 +18,7 @@ export default defineConfig({
     () => import('@adonisjs/lucid/commands'),
     () => import('@adonisjs/mail/commands'),
     () => import('adonis-resque/commands'),
-    () => import('@tuyau/core/commands'),
-    () => import('@tuyau/openapi/commands'),
-    () => import('@adonisjs/bouncer/commands')
+    () => import('@adonisjs/bouncer/commands'),
   ],
 
   /*
@@ -51,9 +49,7 @@ export default defineConfig({
     () => import('@adonisjs/ally/ally_provider'),
     () => import('adonis-resque/providers/resque_provider'),
     () => import('adonis-lucid-soft-deletes/provider'),
-    () => import('@tuyau/core/tuyau_provider'),
-    () => import('@tuyau/openapi/openapi_provider'),
-    () => import('@adonisjs/bouncer/bouncer_provider')
+    () => import('@adonisjs/bouncer/bouncer_provider'),
   ],
 
   /*

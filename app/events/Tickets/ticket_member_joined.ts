@@ -6,7 +6,10 @@ export default class TicketMemberJoined extends BaseEvent {
   /**
    * Accept event data as constructor parameters
    */
-  constructor(public member: User, public ticket: Ticket) {
+  constructor(
+    public member: User,
+    public ticket: Ticket
+  ) {
     super()
   }
 }

@@ -75,5 +75,5 @@ export default await Env.create(new URL('../', import.meta.url), {
 
   STEAM_CALLBACK_URL: Env.schema.string(),
 
-  FRONT_APP_URL: Env.schema.string()
+  FRONT_APP_URL: Env.schema.string(),
 })

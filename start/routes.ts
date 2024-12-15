@@ -9,9 +9,8 @@
 
 import router from '@adonisjs/core/services/router'
 import { middleware } from '#start/kernel'
-const MainController = () => import('#controllers/User/main_controller')
-const UserController = () => import('#controllers/User/user_controller')
-const UserAuthsController = () => import('#controllers/User/user_auths_controller')
+const UserAuthController = () => import('#controllers/User/user_auth_controller')
+const UserResourceController = () => import('#controllers/User/user_resource_controller')
 
 router.get('/', async () => {
   return {
@@ -19,12 +18,12 @@ router.get('/', async () => {
   }
 })
 
-router.get('/auth/steam/authenticate', [UserAuthsController, 'steamCallback'])
-router.get('/auth/steam', [UserAuthsController, 'steamAuth'])
-router.get('/auth', [MainController, 'current']).use(
+router.get('/auth/steam/authenticate', [UserAuthController, 'steamCallback'])
+router.get('/auth/steam', [UserAuthController, 'steamAuth'])
+router.get('/auth', [UserAuthController, 'current']).use(
   middleware.auth({
     guards: ['api'],
   })
 )
 
-router.resource('users', UserController).apiOnly().use('*', middleware.auth())
+router.resource('users', UserResourceController).apiOnly().use('*', middleware.auth())

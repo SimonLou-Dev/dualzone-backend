@@ -3,11 +3,11 @@ import Group from '#models/group'
 import PlayerAlreadyGroupedException from '#exceptions/Service/PlayerManagement/player_already_grouped_exception'
 import PlayerIsNotGroupedException from '#exceptions/Service/PlayerManagement/player_is_not_grouped_exception'
 import PlayerIsNotInSameGroupException from '#exceptions/Service/PlayerManagement/player_is_not_in_same_group_exception'
-import GroupCreated from '#events/playerManager/group_created'
-import GroupMemberJoin from '#events/playerManager/group_member_join'
-import GroupMemberLeave from '#events/playerManager/group_member_leave'
-import GroupLeaderChange from '#events/playerManager/group_leader_change'
-import GroupDelete from '#events/playerManager/group_delete'
+import GroupCreated from '#events/Groups/group_created'
+import GroupMemberJoin from '#events/Groups/group_member_join'
+import GroupMemberLeave from '#events/Groups/group_member_leave'
+import GroupLeaderChange from '#events/Groups/group_leader_change'
+import GroupDelete from '#events/Groups/group_delete'
 
 export default class GroupService {
   public static async createGroup(leader: User) {
