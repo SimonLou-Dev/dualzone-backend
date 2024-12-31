@@ -1,0 +1,27 @@
+asyncapi: '2.6.0'
+info:
+  title: Create an AsyncAPI document for dualzone api websocket
+  version: '1.0.0'
+  description: This is a sample server for a dualzone api websocket, you must be connected to campus VPN or run local docker image
+servers:
+  production:
+    url: wss-primary.slack.com
+    protocol: wss
+    description: Slack's server in Socket Mode for real-time communication
+channels:
+  user/signedup:
+    subscribe:
+      message:
+        description: An event describing that a user just signed up.
+        payload:
+          type: object
+          additionalProperties: false
+          properties:
+            fullName:
+              type: string
+            email:
+              type: string
+              format: email
+            age:
+              type: integer
+              minimum: 18
