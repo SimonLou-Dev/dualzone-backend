@@ -30,6 +30,7 @@ export default class GroupService {
     group.related('members').attach([member.id])
     group.size += 1
     await group.save()
+    await group.load('members')
     await GroupMemberJoin.dispatch(member, group)
   }
 
