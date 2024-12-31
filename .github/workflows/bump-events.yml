@@ -8,7 +8,7 @@ on:
 jobs:
   deploy-doc:
     if: ${{ github.event_name == 'push' }}
-    name: Deploy API documentation on Bump.sh
+    name: Deploy event API documentation on Bump.sh
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -21,7 +21,7 @@ jobs:
           file: doc/asyncapi.yaml
   api-diff:
     if: ${{ github.event_name == 'pull_request' }}
-    name: Check API diff on Bump.sh
+    name: Check event API diff on Bump.sh
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
