@@ -334,7 +334,7 @@
 
 "@adonisjs/transmit@^2.0.2":
   version "2.0.2"
-  resolved "https://registry.npmjs.org/@adonisjs/transmit/-/transmit-2.0.2.tgz"
+  resolved "https://registry.yarnpkg.com/@adonisjs/transmit/-/transmit-2.0.2.tgz#9cf0af8b41ddd138ff45b773ccedce05fcd30bb3"
   integrity sha512-Oyh4S1773N1Ams9mmFM2pplLx8R0IdYwqSTBLRgeDWaR+cyWrL9ZQvF2q7GqIjNzZsXuDgMdPuLlNo+69zIZIg==
   dependencies:
     "@boringnode/transmit" "^0.2.1"
