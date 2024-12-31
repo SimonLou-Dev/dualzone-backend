@@ -14,6 +14,8 @@ tags:
     description: Operations about user
   - name: authentication
     description: Operations about authentication
+  - name: tickets
+    description: Operations about tickets
 paths:
   /users:
     get:
@@ -192,6 +194,235 @@ paths:
               schema:
                 type: string
                 example: "http://localhost:3000/?token=oat_Mg.MlhIcENSYWhhVVgyckJpS056cGw3VDdNdDVURUhJSzl2MWVTRC1ZeTMxMTY1ODMyMTM"
+  /tickets/{id}:
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - tickets
+      summary: Returns a ticket by ID.
+      parameters:
+        - name: id
+          in: path
+          description: ID of ticket to return
+          required: true
+          schema:
+            type: string
+          style: simple
+      responses:
+        401:
+          $ref: "#/components/responses/401"
+        402:
+          $ref: "#/components/responses/402"
+        403:
+          $ref: "#/components/responses/403"
+        404:
+          $ref: "#/components/responses/404"
+        405:
+          $ref: "#/components/responses/405"
+        5XX:
+          $ref: "#/components/responses/5XX"
+        "200":
+          description: A ticket object with their relations
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TicketWithAllRelation"
+    patch:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - tickets
+      summary: Used to close ticket.
+      parameters:
+        - name: id
+          in: path
+          description: ID of ticket to close
+          required: true
+          schema:
+            type: string
+          style: simple
+      responses:
+        401:
+          $ref: "#/components/responses/401"
+        402:
+          $ref: "#/components/responses/402"
+        403:
+          $ref: "#/components/responses/403"
+        404:
+          $ref: "#/components/responses/404"
+        405:
+          $ref: "#/components/responses/405"
+        5XX:
+          $ref: "#/components/responses/5XX"
+        "200":
+          description: A ticket object with their relations
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TicketWithAllRelation"
+  /tickets/{id}/message:
+    put:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - tickets
+      summary: Add message to a ticket.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: "My message"
+                  minLength: 10
+      parameters:
+        - name: id
+          in: path
+          description: ID of ticket
+          required: true
+          schema:
+            type: string
+          style: simple
+      responses:
+        401:
+          $ref: "#/components/responses/401"
+        402:
+          $ref: "#/components/responses/402"
+        403:
+          $ref: "#/components/responses/403"
+        404:
+          $ref: "#/components/responses/404"
+        405:
+          $ref: "#/components/responses/405"
+        5XX:
+          $ref: "#/components/responses/5XX"
+        "200":
+          description: A ticket object with their relations
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TicketWithAllRelation"
+  /tickets/{id}/add-member:
+    put:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - tickets
+      summary: Add Member to ticket.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+                  example: "bcaa40fa-32fd-447b-9f6f-0eac1786e239"
+      parameters:
+        - name: id
+          in: path
+          description: ID of ticket
+          required: true
+          schema:
+            type: string
+          style: simple
+      responses:
+        401:
+          $ref: "#/components/responses/401"
+        402:
+          $ref: "#/components/responses/402"
+        403:
+          $ref: "#/components/responses/403"
+        404:
+          $ref: "#/components/responses/404"
+        405:
+          $ref: "#/components/responses/405"
+        5XX:
+          $ref: "#/components/responses/5XX"
+        "200":
+          description: A ticket object with their relations
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TicketWithAllRelation"
+  /tickets:
+    post:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - tickets
+      summary: Create new ticket.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: "First message of ticket"
+                  minLength: 10
+                title:
+                  type: string
+                  example: "Ticket name"
+                  minLength: 10
+                  maxLength: 200
+      responses:
+        401:
+          $ref: "#/components/responses/401"
+        402:
+          $ref: "#/components/responses/402"
+        403:
+          $ref: "#/components/responses/403"
+        404:
+          $ref: "#/components/responses/404"
+        405:
+          $ref: "#/components/responses/405"
+        5XX:
+          $ref: "#/components/responses/5XX"
+        "200":
+          description: A ticket object with their relations
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TicketWithAllRelation"
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - tickets
+      summary: List all ticket.
+      description: |
+        This route will return all ticket where the user is a member or all ticket opened if user is admin
+      responses:
+        401:
+          $ref: "#/components/responses/401"
+        402:
+          $ref: "#/components/responses/402"
+        403:
+          $ref: "#/components/responses/403"
+        405:
+          $ref: "#/components/responses/405"
+        5XX:
+          $ref: "#/components/responses/5XX"
+        "200":
+          description: An array of ticket object with their relations
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tickets:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/TicketWithAllRelation"
+
 
 components:
   responses:
@@ -237,11 +468,62 @@ components:
       items:
         $ref: "#/components/schemas/User"
     Permission:
-      properties:
-        name:
-          type: string
-          example: "ticket:create"
+      example: "user:read"
     Permissions:
       type: array
       items:
         $ref: "#/components/schemas/Permission"
+    Ticket:
+      properties:
+        id:
+          type: integer
+          example: "164"
+        title:
+          type: string
+          example: "My ticket"
+        terminated:
+          type: boolean
+          example: "false"
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    TicketMessage:
+      properties:
+        id:
+          type: integer
+          example: "164"
+        message:
+          type: string
+          example: "My ticket"
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    TicketWithAllRelation:
+      allOf:
+        - $ref: "#/components/schemas/Ticket"
+        - type: object
+          properties:
+            sender:
+              $ref: "#/components/schemas/User"
+            members:
+              type: array
+              items:
+                $ref: "#/components/schemas/User"
+            messages:
+              type: array
+              items:
+                allOf:
+                  - $ref: "#/components/schemas/TicketMessage"
+                  - type: object
+                    properties:
+                      sender:
+                        $ref: "#/components/schemas/User"
+
+
+

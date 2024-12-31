@@ -69,6 +69,13 @@ export default class TicketService {
     await TicketClosed.dispatch(ticket)
   }
 
+  public static async getAllTicket(user: User): Promise<Ticket[]> {
+    if (await PermissionService.userCan(user, 'ticket:viewAll')) {
+      let tickets = await Ticket.query().where('terminated', false)
+      return tickets
+    } else return this.getAllMyTicket(user)
+  }
+
   public static async getTicket(ticketId: number) {
     let ticket = await Ticket.findOrFail(ticketId)
     await ticket.load('messages')
