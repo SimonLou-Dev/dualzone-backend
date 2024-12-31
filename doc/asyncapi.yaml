@@ -1,0 +1,70 @@
+asyncapi: '3.0.0'
+info:
+  title: Create an AsyncAPI document for dualzone api websocket
+  version: '1.0.0'
+  description: This is a sample server for a dualzone api websocket, you must be connected to campus VPN or run local docker image
+servers:
+  production:
+    host: wss-primary.slack.com
+    pathname: /link
+    protocol: wss
+    description: Slack's server in Socket Mode for real-time communication
+components:
+  messages:
+    reaction:
+      summary: Action triggered when the channel receives a new reaction-added event
+      payload:
+        $ref: '#/components/schemas/reaction'
+    hello:
+      summary: Action triggered when a successful WebSocket connection is established
+      payload:
+        $ref: '#/components/schemas/hello'
+  schemas:
+    hello:
+      type: object
+      properties:
+        type:
+          type: string
+          description: A hello string confirming WebSocket connection
+        connection_info:
+          type: object
+          properties:
+            app_id:
+            type: string
+        num_connections:
+          type: integer
+        debug_info:
+          type: object
+          properties:
+            host:
+              type: string
+            started:
+              type: string
+            build_number:
+              type: integer
+            approximate_connection_time:
+              type: integer
+    reaction:
+      type: object
+      properties:
+        user:
+          type: string
+          description: User ID who performed this event
+        reaction:
+          type: string
+          description: The only reaction that we need is a heart emoji
+        item_user:
+          type: string
+          description: User ID that created the original item that has been reacted to
+        item:
+          type: object
+          properties:
+            channel:
+              type: string
+              description: Channel information of original message
+            ts:
+              type: string
+              description: Timestamp information of original message
+        event_ts:
+          type: string
+          description: Reaction timestamp
