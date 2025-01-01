@@ -11,17 +11,17 @@ jobs:
       uses: asyncapi/github-action-for-cli@v3.1.1 # You can use any version you want
       with:
         command: generate
-        filepath: docs/asyncapi.yaml
-        output: docs/output/events
+        filepath: doc/asyncapi.yaml
+        output: doc/output/events
     - name: Generate Swagger UI
       uses: Legion2/swagger-ui-action@v1
       with:
-        output: ./docs/output/rest
+        output: ./doc/output/rest
         spec-file: ./doc/openapi.yaml
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v4
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./docs/output
+        publish_dir: ./doc/output
 
