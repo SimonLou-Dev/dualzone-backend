@@ -6,6 +6,7 @@ export default class extends BaseSchema {
   async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
+      table.boolean('accepted').defaultTo(false)
       table.uuid('user_id').unsigned().references('id').inTable('users').notNullable()
       table.uuid('friend_id').unsigned().references('id').inTable('users').notNullable()
       table.timestamp('created_at')

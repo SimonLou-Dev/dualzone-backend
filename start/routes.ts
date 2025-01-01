@@ -11,6 +11,7 @@ import router from '@adonisjs/core/services/router'
 import { middleware } from '#start/kernel'
 import transmit from '@adonisjs/transmit/services/main'
 const TicketsController = () => import('#controllers/tickets_controller')
+const FriendsController = () => import('#controllers/friends_controller')
 const UserAuthController = () => import('#controllers/User/user_auth_controller')
 const UserResourceController = () => import('#controllers/User/user_resource_controller')
 
@@ -55,5 +56,15 @@ router
     router.put('/tickets/:id/message', [TicketsController, 'postMessage'])
     router.put('/tickets/:id/add-member', [TicketsController, 'addMember'])
     router.patch('/tickets/:id', [TicketsController, 'close'])
+  })
+  .use(middleware.auth())
+
+// Friends
+router
+  .group(() => {
+    router.get('/friends', [FriendsController, 'index'])
+    router.post('/friends', [FriendsController, 'store'])
+    router.patch('/friends/:id', [FriendsController, 'accept'])
+    router.delete('/friends/:id', [FriendsController, 'destroy'])
   })
   .use(middleware.auth())

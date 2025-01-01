@@ -16,6 +16,8 @@ tags:
     description: Operations about authentication
   - name: tickets
     description: Operations about tickets
+  - name: friends
+    description: Operations about friends
 paths:
   /users:
     get:
@@ -428,7 +430,121 @@ paths:
                     type: array
                     items:
                       $ref: "#/components/schemas/TicketWithAllRelation"
-
+  /friends:
+    post:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - friends
+      summary: Send friend request to user.
+      description: |
+        This route will send a friend request to the user
+        If you send a friend request to a user that already sent you a friend request, it will accept the friend request
+        If you have already sent a friend request to the user, it will be return 200 response
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+                  example: "bcaa40fa-32fd-447b-9f6f-0eac1786e239"
+                  description: "The user id of the user you want to send a friend request, must be a valid user id"
+      responses:
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+        "405":
+          $ref: "#/components/responses/405"
+        "422":
+          $ref: "#/components/responses/422"
+        "5XX":
+          $ref: "#/components/responses/5XX"
+        "200":
+          $ref: "#/components/responses/friendResponse"
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - friends
+      summary: List all your friends and friend request.
+      responses:
+        "401":
+          $ref: "#/components/responses/401"
+        "402":
+          $ref: "#/components/responses/402"
+        "403":
+          $ref: "#/components/responses/403"
+        "405":
+          $ref: "#/components/responses/405"
+        "5XX":
+          $ref: "#/components/responses/5XX"
+        "200":
+          $ref: "#/components/responses/friendResponse"
+  /friends/{id}:
+    patch:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - friends
+      summary: Accept friend request.
+      parameters:
+        - name: id
+          in: path
+          description: ID of user to accept friend request
+          required: true
+          schema:
+            type: string
+            example: "bcaa40fa-32fd-447b-9f6f-0eac1786e239"
+          style: simple
+      responses:
+        "401":
+          $ref: "#/components/responses/401"
+        "402":
+          $ref: "#/components/responses/402"
+        "403":
+          $ref: "#/components/responses/403"
+        "404":
+          $ref: "#/components/responses/404"
+        "405":
+          $ref: "#/components/responses/405"
+        "5XX":
+          $ref: "#/components/responses/5XX"
+        "200":
+          $ref: "#/components/responses/friendResponse"
+    delete:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - friends
+      summary: Delete friend or refuse friend request.
+      parameters:
+        - name: id
+          in: path
+          description: ID of user to delete friend or refuse friend request
+          required: true
+          schema:
+            type: string
+            example: "bcaa40fa-32fd-447b-9f6f-0eac1786e239"
+          style: simple
+      responses:
+        "401":
+          $ref: "#/components/responses/401"
+        "402":
+          $ref: "#/components/responses/402"
+        "403":
+          $ref: "#/components/responses/403"
+        "404":
+          $ref: "#/components/responses/404"
+        "405":
+          $ref: "#/components/responses/405"
+        "5XX":
+          $ref: "#/components/responses/5XX"
+        "200":
+          $ref: "#/components/responses/friendResponse"
 
 components:
   responses:
@@ -465,6 +581,28 @@ components:
                     rule:
                       type: string
                       example: "unique"
+    friendResponse:
+      description: "Response when you make request related to friend"
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              friends:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+              friendRequestsSent:
+                type: array
+                description: "List of friend request sent by the user & need to be accepted by the other user"
+                items:
+                  $ref: "#/components/schemas/User"
+              friendRequestsReceived:
+                type: array
+                description: "List of friend request received by the user & need to be accepted by the user"
+                items:
+                  $ref: "#/components/schemas/User"
+
   securitySchemes:
     bearerAuth:
       type: http

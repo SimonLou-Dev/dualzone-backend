@@ -43,6 +43,12 @@ export default class User extends BaseModel {
 
   @manyToMany(() => User, {
     pivotTable: 'player_has_friends',
+    pivotRelatedForeignKey: 'friend_id',
+    pivotForeignKey: 'user_id',
+    pivotColumns: ['accepted'],
+    onQuery: (query) => {
+      query.where('accepted', true)
+    }
   })
   declare friends: relations.ManyToMany<typeof User>
 
@@ -62,4 +68,29 @@ export default class User extends BaseModel {
 
   @hasMany(() => Report)
   declare reports: relations.HasMany<typeof Report>
+
+  @manyToMany(() => User, {
+    pivotTable: 'player_has_friends',
+    pivotRelatedForeignKey: 'friend_id',
+    pivotForeignKey: 'user_id',
+    pivotColumns: ['accepted'],
+    onQuery: (query) => {
+      query.where('accepted', false)
+    }
+  })
+  declare friendRequestSent: relations.ManyToMany<typeof User>
+
+  @manyToMany(() => User, {
+    pivotTable: 'player_has_friends',
+    pivotRelatedForeignKey: 'user_id',
+    pivotForeignKey: 'friend_id',
+    pivotColumns: ['accepted'],
+    onQuery: (query) => {
+      query.where('accepted', false)
+    }
+  })
+  declare friendRequestReceived: relations.ManyToMany<typeof User>
+
+
+
 }
