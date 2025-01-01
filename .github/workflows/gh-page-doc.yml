@@ -12,6 +12,7 @@ jobs:
       with:
         command: generate
         filepath: doc/asyncapi.yaml
+        template: '@asyncapi/html-template'
         output: doc/output/events
     - name: Generate Swagger UI
       uses: Legion2/swagger-ui-action@v1
