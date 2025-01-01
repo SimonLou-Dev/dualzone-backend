@@ -6,4 +6,6 @@ on:
     branches: ['dev', 'feature/*', 'features/*', 'hotfix', 'testing', 'issue-*']
 jobs:
   test:
-    uses: ./.github/workflows/test.yml
+    uses: ./.github/workflows/underTasks/code/test.yml
+  documentation:
+    uses: ./.github/workflows/underTasks/documentation/gh-page-doc.yml
