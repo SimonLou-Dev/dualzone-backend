@@ -40,9 +40,9 @@ export default class TicketsController {
    */
   async postMessage({ response, auth, params, bouncer, request }: HttpContextContract) {
     const ticket = await TicketService.getTicket(params.id)
-    const user: User = auth.getUserOrFail()
-    const payload = await request.validateUsing(createTicketMessageValidator)
     await bouncer.with(TicketPolicy).authorize('write', ticket)
+    const payload = await request.validateUsing(createTicketMessageValidator)
+    const user: User = auth.getUserOrFail()
     await TicketService.sendMessage(ticket, user, payload.message)
     await this.loadTicket(ticket)
     return response.json(ticket)
@@ -50,9 +50,10 @@ export default class TicketsController {
 
   async addMember({ response, params, bouncer, request }: HttpContextContract) {
     const ticket = await TicketService.getTicket(params.id)
-    const data = await request.validateUsing(addMemberValidator)
     await bouncer.with(TicketPolicy).authorize('addMember', ticket)
-    await TicketService.addMember(ticket, data.userId)
+    const data = await request.validateUsing(addMemberValidator)
+    const newMember = await User.findOrFail(data.userId)
+    await TicketService.addMember(ticket, newMember)
     await this.loadTicket(ticket)
     return response.json(ticket)
   }
@@ -62,8 +63,8 @@ export default class TicketsController {
    */
   async close({ params, bouncer, response }: HttpContextContract) {
     const ticket = await TicketService.getTicket(params.id)
-    await TicketService.closeTicket(ticket)
     await bouncer.with(TicketPolicy).authorize('close', ticket)
+    await TicketService.closeTicket(ticket)
     return response.json(ticket)
   }
 

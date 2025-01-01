@@ -53,7 +53,7 @@ export default class TicketService {
     await TicketMessageSended.dispatch(ticket, user, message)
   }
 
-  public static async getAllMyTicket(user: User) {
+  public static async getAllMyTicket(user: User): Promise<Ticket[]> {
     let tickets = await Ticket.query()
       .where('terminated', false)
       .whereHas('members', (builder) => {
@@ -70,10 +70,13 @@ export default class TicketService {
   }
 
   public static async getAllTicket(user: User): Promise<Ticket[]> {
-    if (await PermissionService.userCan(user, 'ticket:viewAll')) {
-      let tickets = await Ticket.query().where('terminated', false)
-      return tickets
-    } else return this.getAllMyTicket(user)
+    let tickets: Ticket[] = []
+    if (await PermissionService.userCan(user, 'ticket:viewAll'))
+      tickets = await Ticket.query().where('terminated', false)
+    else {
+      tickets = await this.getAllMyTicket(user)
+    }
+    return tickets
   }
 
   public static async getTicket(ticketId: number) {
@@ -86,7 +89,7 @@ export default class TicketService {
     return ticket
   }
 
-  public static async getAdminTicket() {
+  public static async getAdminTicket(): Promise<Ticket[]> {
     let tickets = await Ticket.query().where('terminated', false)
     return tickets
   }

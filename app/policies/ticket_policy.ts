@@ -5,39 +5,40 @@ import PermissionService from '#services/playerManagement/permission_service'
 import Ticket from '#models/ticket'
 
 export default class TicketPolicy extends BasePolicy {
-  index(user: User): AuthorizerResponse {
-    return PermissionService.userCan(user, 'ticket:viewAll')
+  async index(user: User): Promise<AuthorizerResponse> {
+    return await PermissionService.userCan(user, 'ticket:viewAll')
   }
 
-  show(user: User, target: Ticket): AuthorizerResponse {
-    target.load('members')
-    target.load('sender')
+  async show(user: User, target: Ticket): Promise<AuthorizerResponse> {
+    await target.load('members')
+    await target.load('sender')
+
 
     if (target.members.map((member) => member.id).includes(user.id)) return true
     else if (target.sender.id === user.id) return true
-    else return PermissionService.userCan(user, 'ticket:viewAll')
+    else return await PermissionService.userCan(user, 'ticket:viewAll')
   }
 
-  addMember(user: User, target: Ticket): AuthorizerResponse {
-    target.load('sender')
+  async addMember(user: User, target: Ticket): Promise<AuthorizerResponse> {
+    await target.load('sender')
 
     if (target.sender.id === user.id) return true
-    else return PermissionService.userCan(user, 'ticket:viewAll')
+    else return await PermissionService.userCan(user, 'ticket:viewAll')
   }
 
-  close(user: User, target: Ticket): AuthorizerResponse {
-    target.load('sender')
+  async close(user: User, target: Ticket): Promise<AuthorizerResponse> {
+    await target.load('sender')
 
     if (target.sender.id === user.id) return true
-    else return PermissionService.userCan(user, 'ticket:close')
+    else return await PermissionService.userCan(user, 'ticket:close')
   }
 
-  write(user: User, target: Ticket): AuthorizerResponse {
-    target.load('members')
-    target.load('sender')
+  async write(user: User, target: Ticket): Promise<AuthorizerResponse> {
+    await target.load('members')
+    await target.load('sender')
 
     if (target.members.map((member) => member.id).includes(user.id)) return true
     else if (target.sender.id === user.id) return true
-    else return PermissionService.userCan(user, 'ticket:write')
+    else return await PermissionService.userCan(user, 'ticket:write')
   }
 }

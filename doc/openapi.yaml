@@ -25,17 +25,17 @@ paths:
         - users
       summary: Returns a list of users.
       responses:
-        401:
+        "401":
           $ref: "#/components/responses/401"
-        402:
+        "402":
           $ref: "#/components/responses/402"
-        403:
+        "403":
           $ref: "#/components/responses/403"
-        404:
+        "404":
           $ref: "#/components/responses/404"
-        405:
+        "405":
           $ref: "#/components/responses/405"
-        5XX:
+        "5XX":
           $ref: "#/components/responses/5XX"
         "200": # status code
           description: A JSON array of user names
@@ -59,17 +59,17 @@ paths:
             type: string
           style: simple
       responses:
-        401:
+        "401":
           $ref: "#/components/responses/401"
-        402:
+        "402":
           $ref: "#/components/responses/402"
-        403:
+        "403":
           $ref: "#/components/responses/403"
-        404:
+        "404":
           $ref: "#/components/responses/404"
-        405:
+        "405":
           $ref: "#/components/responses/405"
-        5XX:
+        "5XX":
           $ref: "#/components/responses/5XX"
         "200":
           description: A user object
@@ -98,17 +98,17 @@ paths:
             schema:
               $ref: "#/components/schemas/User"
       responses:
-        401:
+        "401":
           $ref: "#/components/responses/401"
-        402:
+        "402":
           $ref: "#/components/responses/402"
-        403:
+        "403":
           $ref: "#/components/responses/403"
-        404:
+        "404":
           $ref: "#/components/responses/404"
-        405:
+        "405":
           $ref: "#/components/responses/405"
-        5XX:
+        "5XX":
           $ref: "#/components/responses/5XX"
         "200":
           description: A user object
@@ -124,17 +124,17 @@ paths:
         - authentication
       summary: Return current user and refreshed token if needed
       responses:
-        401:
+        "401":
           $ref: "#/components/responses/401"
-        402:
+        "402":
           $ref: "#/components/responses/402"
-        403:
+        "403":
           $ref: "#/components/responses/403"
-        404:
+        "404":
           $ref: "#/components/responses/404"
-        405:
+        "405":
           $ref: "#/components/responses/405"
-        5XX:
+        "5XX":
           $ref: "#/components/responses/5XX"
         "200": # status code
           description: A JSON array of user names
@@ -187,7 +187,7 @@ paths:
       responses:
         5XX:
           $ref: "#/components/responses/5XX"
-        301:
+        "301":
           description: Url to frontend with token in query
           headers:
             Location:
@@ -210,17 +210,17 @@ paths:
             type: string
           style: simple
       responses:
-        401:
+        "401":
           $ref: "#/components/responses/401"
-        402:
+        "402":
           $ref: "#/components/responses/402"
-        403:
+        "403":
           $ref: "#/components/responses/403"
-        404:
+        "404":
           $ref: "#/components/responses/404"
-        405:
+        "405":
           $ref: "#/components/responses/405"
-        5XX:
+        "5XX":
           $ref: "#/components/responses/5XX"
         "200":
           description: A ticket object with their relations
@@ -243,17 +243,17 @@ paths:
             type: string
           style: simple
       responses:
-        401:
+        "401":
           $ref: "#/components/responses/401"
-        402:
+        "402":
           $ref: "#/components/responses/402"
-        403:
+        "403":
           $ref: "#/components/responses/403"
-        404:
+        "404":
           $ref: "#/components/responses/404"
-        405:
+        "405":
           $ref: "#/components/responses/405"
-        5XX:
+        "5XX":
           $ref: "#/components/responses/5XX"
         "200":
           description: A ticket object with their relations
@@ -288,17 +288,19 @@ paths:
             type: string
           style: simple
       responses:
-        401:
+        "401":
           $ref: "#/components/responses/401"
-        402:
+        "402":
           $ref: "#/components/responses/402"
-        403:
+        "403":
           $ref: "#/components/responses/403"
-        404:
+        "404":
           $ref: "#/components/responses/404"
-        405:
+        "405":
           $ref: "#/components/responses/405"
-        5XX:
+        "422":
+          $ref: "#/components/responses/422"
+        "5XX":
           $ref: "#/components/responses/5XX"
         "200":
           description: A ticket object with their relations
@@ -332,17 +334,19 @@ paths:
             type: string
           style: simple
       responses:
-        401:
+        "401":
           $ref: "#/components/responses/401"
-        402:
+        "402":
           $ref: "#/components/responses/402"
-        403:
+        "403":
           $ref: "#/components/responses/403"
-        404:
+        "404":
           $ref: "#/components/responses/404"
-        405:
+        "405":
           $ref: "#/components/responses/405"
-        5XX:
+        "422":
+          $ref: "#/components/responses/422"
+        "5XX":
           $ref: "#/components/responses/5XX"
         "200":
           description: A ticket object with their relations
@@ -374,17 +378,19 @@ paths:
                   minLength: 10
                   maxLength: 200
       responses:
-        401:
+        "401":
           $ref: "#/components/responses/401"
-        402:
+        "402":
           $ref: "#/components/responses/402"
-        403:
+        "403":
           $ref: "#/components/responses/403"
-        404:
+        "404":
           $ref: "#/components/responses/404"
-        405:
+        "405":
           $ref: "#/components/responses/405"
-        5XX:
+        "422":
+          $ref: "#/components/responses/422"
+        "5XX":
           $ref: "#/components/responses/5XX"
         "200":
           description: A ticket object with their relations
@@ -401,15 +407,15 @@ paths:
       description: |
         This route will return all ticket where the user is a member or all ticket opened if user is admin
       responses:
-        401:
+        "401":
           $ref: "#/components/responses/401"
-        402:
+        "402":
           $ref: "#/components/responses/402"
-        403:
+        "403":
           $ref: "#/components/responses/403"
-        405:
+        "405":
           $ref: "#/components/responses/405"
-        5XX:
+        "5XX":
           $ref: "#/components/responses/5XX"
         "200":
           description: An array of ticket object with their relations
@@ -438,6 +444,27 @@ components:
       description: "Invalid input (e.g. invalid fields, invalid format)"
     "5XX":
       description: "Server error"
+    "422":
+      description: "Validation error"
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    field:
+                      type: string
+                      example: "email"
+                    message:
+                      type: string
+                      example: "The email is already taken"
+                    rule:
+                      type: string
+                      example: "unique"
   securitySchemes:
     bearerAuth:
       type: http
@@ -477,13 +504,13 @@ components:
       properties:
         id:
           type: integer
-          example: "164"
+          example: 164
         title:
           type: string
           example: "My ticket"
         terminated:
           type: boolean
-          example: "false"
+          example: false
         created_at:
           type: string
           format: date-time
@@ -494,7 +521,7 @@ components:
       properties:
         id:
           type: integer
-          example: "164"
+          example: 164
         message:
           type: string
           example: "My ticket"

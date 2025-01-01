@@ -42,7 +42,7 @@ router
     router.get('/users', [UserResourceController, 'index'])
     router.get('/users/:id', [UserResourceController, 'show'])
     router.delete('/users/', [UserResourceController, 'destroy'])
-    router.put('/users/', [UserResourceController, 'update'])
+    router.put('/users/:id', [UserResourceController, 'update'])
   })
   .use(middleware.auth())
 

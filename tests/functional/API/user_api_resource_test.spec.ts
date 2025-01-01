@@ -2,13 +2,20 @@ import { test } from '@japa/runner'
 import { UserFactory } from '#database/factories/user'
 import Role from '#models/role'
 import RoleService from '#services/playerManagement/role_service'
+import User from '#models/user'
 
-test.group('User resource test', async () => {
-  const user = await UserFactory.create()
-  const admin = await UserFactory.create()
-  const adminRole = await Role.findBy('name', 'administrator')
-  if (adminRole === null) throw new Error('Admin role not found')
-  await RoleService.addUserRole(admin, adminRole)
+test.group('User api resource test', (group) => {
+  let user = new User()
+  let admin = new User()
+  let adminRole: Role | null = null
+
+  group.setup(async () => {
+    user = await UserFactory.create()
+    admin = await UserFactory.create()
+    adminRole = await Role.findBy('name', 'administrator')
+    if (adminRole === null) throw new Error('Admin role not found')
+    await RoleService.addUserRole(admin, adminRole)
+  })
 
   test('Getting Authed user infos', async ({ client }) => {
     const req = await client.get('/auth').loginAs(user)
@@ -94,8 +101,12 @@ test.group('User resource test', async () => {
   })
 })
 
-test.group('User resource test (not authed)', async () => {
-  const user = await UserFactory.create()
+test.group('User resource test (not authed)', async (group) => {
+  let user = new User()
+
+  group.setup(async () => {
+    user = await UserFactory.create()
+  })
 
   test('Getting Authed user infos (NA)', async ({ client }) => {
     const req = await client.get('/auth')
