@@ -7,5 +7,3 @@ on:
 jobs:
   test:
     uses: ./.github/workflows/test.yml
-  documentation:
-    uses: ./.github/workflows/gh-page-doc.yml
