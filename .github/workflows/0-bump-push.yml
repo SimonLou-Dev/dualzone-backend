@@ -7,6 +7,6 @@ on:
     branches: ['dev', 'prod', 'testing']
 jobs:
   api-doc-events:
-    uses: ./.github/workflows/underTasks/bump/bump-events.yml
+    uses: ./.github/workflows/bump-events.yml
   api-doc-rest:
-    uses: ./.github/workflows/underTasks/bump/bump-rest.yml
+    uses: ./.github/workflows/bump-rest.yml
