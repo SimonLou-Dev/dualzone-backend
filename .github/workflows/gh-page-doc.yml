@@ -11,8 +11,8 @@ jobs:
       uses: asyncapi/github-action-for-cli@v3.1.1 # You can use any version you want
       with:
         command: generate
-        filepath: ./docs/asyncapi.yaml
-        output: ./docs/output/events
+        filepath: docs/asyncapi.yaml
+        output: docs/output/events
     - name: Generate Swagger UI
       uses: Legion2/swagger-ui-action@v1
       with:
