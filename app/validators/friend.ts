@@ -10,6 +10,5 @@ export const requestFriendshipValidator = vine.compile(
         const user = await db.from('users').where('id', value).first()
         return user
       })
-
   })
 )

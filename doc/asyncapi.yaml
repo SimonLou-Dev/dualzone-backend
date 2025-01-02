@@ -39,6 +39,19 @@ channels:
           - $ref: '#/components/messages/groupLeaderChanged'
           - $ref: '#/components/messages/groupMemberJoined'
           - $ref: '#/components/messages/groupMemberLeaved'
+  users/{userUUID}/friends:
+    parameters:
+      userUUID:
+        description: The unique identifier of the user
+        schema:
+          type: string
+          examples:
+            - "123e4567-e89b-12d3-a456-426614174000"
+    subscribe:
+      operationId: "userFriendsEvents"
+      description: List of all event related to a user
+      message:
+        $ref: '#/components/messages/friendMessageEvents'
   users/{userUUID}/notify:
     parameters:
       userUUID:
@@ -156,6 +169,11 @@ components:
                 type: string
               sender:
                 type: string
+    friendMessageEvents:
+      messageId: friendMessageEvents
+      summary: Send when a message is sent to a friend
+      payload:
+        $ref: '#/components/schemas/friendsEvents'
   schemas:
     groupBasics:
       type: object
@@ -199,6 +217,22 @@ components:
               type: string
             member:
               type: string
+    friendsEvents:
+        type: object
+        properties:
+          event:
+            type: string
+            enum:
+                - friendRequestSent
+                - friendRequestAccepted
+                - friendRequestRefused
+                - friendshipDeleted
+          data:
+            type: object
+            properties:
+              userId:
+                type: string
+
 
 
 

@@ -23,6 +23,14 @@ export default class FriendsController {
   async store({ request, auth, response }: HttpContextContract) {
     const data = await request.validateUsing(requestFriendshipValidator)
     const user: User = auth.getUserOrFail()
+    if (data.userId === user.id) {
+      return response.status(422).json({
+        errors: [{
+          field: 'userId',
+          message: 'You cannot send a friend request to yourself'
+        }]
+      })
+    }
     await user.load('friendRequestReceived')
     let friendship = await db.from('player_has_friends').where('user_id', user.id).where('friend_id', data.userId).first()
     if(friendship) {
@@ -47,7 +55,7 @@ export default class FriendsController {
     const user: User = auth.getUserOrFail()
     const friend = await User.findOrFail(params.id)
 
-    await this.validateFriendshipRequest(user, friend)
+    await this.validateFriendshipRequest(friend, user)
 
     return response.json(await this.loadFriends(user))
   }
@@ -93,10 +101,10 @@ export default class FriendsController {
     }
   }
 
-  private async validateFriendshipRequest(user: User, target: User): Promise<void> {
-    await db.from('player_has_friends').where('user_id', target.id).where('friend_id', user.id).update({accepted: true})
-    await user.related('friends').attach({[target.id]: {accepted: true}})
-    await user.save()
-    await FriendRequestAccepted.dispatch(user, target)
+  private async validateFriendshipRequest(sender: User, friend: User): Promise<void> {
+    await db.from('player_has_friends').where('user_id', sender.id).where('friend_id', friend.id).update({accepted: true})
+    await friend.related('friends').attach({[sender.id]: {accepted: true}})
+    await sender.save()
+    await FriendRequestAccepted.dispatch(sender, friend)
   }
 }
