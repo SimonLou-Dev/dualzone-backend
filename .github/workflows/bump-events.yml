@@ -3,7 +3,10 @@ permissions:
   contents: read
   pull-requests: write
 on:
-  workflow_call:
+  push:
+    branches: ['dev', 'prod', 'testing']
+  pull_request:
+    branches: ['dev', 'prod', 'testing']
 jobs:
   deploy-doc:
     if: ${{ github.event_name == 'push' }}
@@ -34,16 +37,4 @@ jobs:
           command: diff
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-  generate:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v2
-      - name: Generating HTML from my AsyncAPI document
-        uses: asyncapi/github-action-for-generator
-      - name: Deploy GH page
-        uses: JamesIves/github-pages-deploy-action
-        with:
-          ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH: gh-pages
-          FOLDER: generated-html
+

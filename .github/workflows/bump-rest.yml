@@ -3,7 +3,10 @@ permissions:
   contents: read
   pull-requests: write
 on:
-  workflow_call:
+  push:
+    branches: ['dev', 'prod', 'testing']
+  pull_request:
+    branches: ['dev', 'prod', 'testing']
 jobs:
   deploy-doc:
     if: ${{ github.event_name == 'push' }}
