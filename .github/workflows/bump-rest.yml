@@ -1,14 +1,16 @@
-
 name: Check & deploy API documentation
 permissions:
   contents: read
   pull-requests: write
 on:
-  workflow_call:
+  push:
+    branches: ['dev', 'prod', 'testing']
+  pull_request:
+    branches: ['dev', 'prod', 'testing']
 jobs:
   deploy-doc:
     if: ${{ github.event_name == 'push' }}
-    name: Deploy API documentation on Bump.sh
+    name: Deploy rest API documentation on Bump.sh
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -21,7 +23,7 @@ jobs:
           file: doc/openapi.yaml
   api-diff:
     if: ${{ github.event_name == 'pull_request' }}
-    name: Check API diff on Bump.sh
+    name: Check rest API diff on Bump.sh
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -35,6 +37,3 @@ jobs:
           command: diff
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-
-
-

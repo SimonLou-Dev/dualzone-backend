@@ -13,5 +13,6 @@
 */
 
 export const policies = {
+  TicketPolicy: () => import('#policies/ticket_policy'),
   UserPolicy: () => import('#policies/user_policy'),
 }

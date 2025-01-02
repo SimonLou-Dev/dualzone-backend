@@ -14,6 +14,10 @@ tags:
     description: Operations about user
   - name: authentication
     description: Operations about authentication
+  - name: tickets
+    description: Operations about tickets
+  - name: friends
+    description: Operations about friends
 paths:
   /users:
     get:
@@ -23,28 +27,28 @@ paths:
         - users
       summary: Returns a list of users.
       responses:
-        401:
-          $ref: "#/components/responses/401"
-        402:
-          $ref: "#/components/responses/402"
-        403:
-          $ref: "#/components/responses/403"
-        404:
-          $ref: "#/components/responses/404"
-        405:
-          $ref: "#/components/responses/405"
-        5XX:
-          $ref: "#/components/responses/5XX"
-        "200": # status code
+        '401':
+          $ref: '#/components/responses/401'
+        '402':
+          $ref: '#/components/responses/402'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '405':
+          $ref: '#/components/responses/405'
+        '5XX':
+          $ref: '#/components/responses/5XX'
+        '200': # status code
           description: A JSON array of user names
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Users"
+                $ref: '#/components/schemas/Users'
   /users/{id}:
     get:
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       tags:
         - users
       summary: Returns a user by ID.
@@ -57,27 +61,27 @@ paths:
             type: string
           style: simple
       responses:
-        401:
-          $ref: "#/components/responses/401"
-        402:
-          $ref: "#/components/responses/402"
-        403:
-          $ref: "#/components/responses/403"
-        404:
-          $ref: "#/components/responses/404"
-        405:
-          $ref: "#/components/responses/405"
-        5XX:
-          $ref: "#/components/responses/5XX"
-        "200":
+        '401':
+          $ref: '#/components/responses/401'
+        '402':
+          $ref: '#/components/responses/402'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '405':
+          $ref: '#/components/responses/405'
+        '5XX':
+          $ref: '#/components/responses/5XX'
+        '200':
           description: A user object
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/User"
+                $ref: '#/components/schemas/User'
     put:
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       tags:
         - users
       summary: Updates a user by ID.
@@ -94,47 +98,47 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/User"
+              $ref: '#/components/schemas/User'
       responses:
-        401:
-          $ref: "#/components/responses/401"
-        402:
-          $ref: "#/components/responses/402"
-        403:
-          $ref: "#/components/responses/403"
-        404:
-          $ref: "#/components/responses/404"
-        405:
-          $ref: "#/components/responses/405"
-        5XX:
-          $ref: "#/components/responses/5XX"
-        "200":
+        '401':
+          $ref: '#/components/responses/401'
+        '402':
+          $ref: '#/components/responses/402'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '405':
+          $ref: '#/components/responses/405'
+        '5XX':
+          $ref: '#/components/responses/5XX'
+        '200':
           description: A user object
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/User"
+                $ref: '#/components/schemas/User'
   /auth:
     get:
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       tags:
         - authentication
       summary: Return current user and refreshed token if needed
       responses:
-        401:
-          $ref: "#/components/responses/401"
-        402:
-          $ref: "#/components/responses/402"
-        403:
-          $ref: "#/components/responses/403"
-        404:
-          $ref: "#/components/responses/404"
-        405:
-          $ref: "#/components/responses/405"
-        5XX:
-          $ref: "#/components/responses/5XX"
-        "200": # status code
+        '401':
+          $ref: '#/components/responses/401'
+        '402':
+          $ref: '#/components/responses/402'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '405':
+          $ref: '#/components/responses/405'
+        '5XX':
+          $ref: '#/components/responses/5XX'
+        '200': # status code
           description: A JSON array of user names
           content:
             application/json:
@@ -147,14 +151,14 @@ paths:
                       value:
                         type: string
                         nullable: true
-                        example: ""
+                        example: ''
                       type:
                         type: string
-                        example: "Bearer"
+                        example: 'Bearer'
                   permissions:
-                    $ref: "#/components/schemas/Permissions"
+                    $ref: '#/components/schemas/Permissions'
                   user:
-                    $ref: "#/components/schemas/User"
+                    $ref: '#/components/schemas/User'
   /auth/steam:
     get:
       tags:
@@ -166,14 +170,14 @@ paths:
         After that, the client will be redirected to the frontend with the token in the query
       responses:
         5XX:
-          $ref: "#/components/responses/5XX"
+          $ref: '#/components/responses/5XX'
         301:
           description: Redirect to steam authentication
           headers:
             Location:
               schema:
                 type: string
-                example: "https://steamcommunity.com/openid/login?openid.claimed_id=http://specs.openid.net/auth/2.0/identifier_select&openid.identity=http://specs.openid.net/auth/2.0/identifier_select&openid.mode=checkid_setup&openid.ns=http://specs.openid.net/auth/2.0&openid.realm=http://localhost:3333&openid.return_to=http://localhost:3333/auth/steam/callback"
+                example: 'https://steamcommunity.com/openid/login?openid.claimed_id=http://specs.openid.net/auth/2.0/identifier_select&openid.identity=http://specs.openid.net/auth/2.0/identifier_select&openid.mode=checkid_setup&openid.ns=http://specs.openid.net/auth/2.0&openid.realm=http://localhost:3333&openid.return_to=http://localhost:3333/auth/steam/callback'
   /auth/steam/authenticate:
     get:
       tags:
@@ -184,29 +188,421 @@ paths:
         And then the client will be redirected to the frontend with the token in the query
       responses:
         5XX:
-          $ref: "#/components/responses/5XX"
-        301:
+          $ref: '#/components/responses/5XX'
+        '301':
           description: Url to frontend with token in query
           headers:
             Location:
               schema:
                 type: string
-                example: "http://localhost:3000/?token=oat_Mg.MlhIcENSYWhhVVgyckJpS056cGw3VDdNdDVURUhJSzl2MWVTRC1ZeTMxMTY1ODMyMTM"
+                example: 'http://localhost:3000/?token=oat_Mg.MlhIcENSYWhhVVgyckJpS056cGw3VDdNdDVURUhJSzl2MWVTRC1ZeTMxMTY1ODMyMTM'
+  /tickets/{id}:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - tickets
+      summary: Returns a ticket by ID.
+      parameters:
+        - name: id
+          in: path
+          description: ID of ticket to return
+          required: true
+          schema:
+            type: string
+          style: simple
+      responses:
+        '401':
+          $ref: '#/components/responses/401'
+        '402':
+          $ref: '#/components/responses/402'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '405':
+          $ref: '#/components/responses/405'
+        '5XX':
+          $ref: '#/components/responses/5XX'
+        '200':
+          description: A ticket object with their relations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TicketWithAllRelation'
+    patch:
+      security:
+        - bearerAuth: []
+      tags:
+        - tickets
+      summary: Used to close ticket.
+      parameters:
+        - name: id
+          in: path
+          description: ID of ticket to close
+          required: true
+          schema:
+            type: string
+          style: simple
+      responses:
+        '401':
+          $ref: '#/components/responses/401'
+        '402':
+          $ref: '#/components/responses/402'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '405':
+          $ref: '#/components/responses/405'
+        '5XX':
+          $ref: '#/components/responses/5XX'
+        '200':
+          description: A ticket object with their relations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TicketWithAllRelation'
+  /tickets/{id}/message:
+    put:
+      security:
+        - bearerAuth: []
+      tags:
+        - tickets
+      summary: Add message to a ticket.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: 'My message'
+                  minLength: 10
+      parameters:
+        - name: id
+          in: path
+          description: ID of ticket
+          required: true
+          schema:
+            type: string
+          style: simple
+      responses:
+        '401':
+          $ref: '#/components/responses/401'
+        '402':
+          $ref: '#/components/responses/402'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '405':
+          $ref: '#/components/responses/405'
+        '422':
+          $ref: '#/components/responses/422'
+        '5XX':
+          $ref: '#/components/responses/5XX'
+        '200':
+          description: A ticket object with their relations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TicketWithAllRelation'
+  /tickets/{id}/add-member:
+    put:
+      security:
+        - bearerAuth: []
+      tags:
+        - tickets
+      summary: Add Member to ticket.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+                  example: 'bcaa40fa-32fd-447b-9f6f-0eac1786e239'
+      parameters:
+        - name: id
+          in: path
+          description: ID of ticket
+          required: true
+          schema:
+            type: string
+          style: simple
+      responses:
+        '401':
+          $ref: '#/components/responses/401'
+        '402':
+          $ref: '#/components/responses/402'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '405':
+          $ref: '#/components/responses/405'
+        '422':
+          $ref: '#/components/responses/422'
+        '5XX':
+          $ref: '#/components/responses/5XX'
+        '200':
+          description: A ticket object with their relations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TicketWithAllRelation'
+  /tickets:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - tickets
+      summary: Create new ticket.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: 'First message of ticket'
+                  minLength: 10
+                title:
+                  type: string
+                  example: 'Ticket name'
+                  minLength: 10
+                  maxLength: 200
+      responses:
+        '401':
+          $ref: '#/components/responses/401'
+        '402':
+          $ref: '#/components/responses/402'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '405':
+          $ref: '#/components/responses/405'
+        '422':
+          $ref: '#/components/responses/422'
+        '5XX':
+          $ref: '#/components/responses/5XX'
+        '200':
+          description: A ticket object with their relations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TicketWithAllRelation'
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - tickets
+      summary: List all ticket.
+      description: |
+        This route will return all ticket where the user is a member or all ticket opened if user is admin
+      responses:
+        '401':
+          $ref: '#/components/responses/401'
+        '402':
+          $ref: '#/components/responses/402'
+        '403':
+          $ref: '#/components/responses/403'
+        '405':
+          $ref: '#/components/responses/405'
+        '5XX':
+          $ref: '#/components/responses/5XX'
+        '200':
+          description: An array of ticket object with their relations
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tickets:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TicketWithAllRelation'
+  /friends:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - friends
+      summary: Send friend request to user.
+      description: |
+        This route will send a friend request to the user
+        If you send a friend request to a user that already sent you a friend request, it will accept the friend request
+        If you have already sent a friend request to the user, it will be return 200 response
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+                  example: 'bcaa40fa-32fd-447b-9f6f-0eac1786e239'
+                  description: 'The user id of the user you want to send a friend request, must be a valid user id'
+      responses:
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '405':
+          $ref: '#/components/responses/405'
+        '422':
+          $ref: '#/components/responses/422'
+        '5XX':
+          $ref: '#/components/responses/5XX'
+        '200':
+          $ref: '#/components/responses/friendResponse'
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - friends
+      summary: List all your friends and friend request.
+      responses:
+        '401':
+          $ref: '#/components/responses/401'
+        '402':
+          $ref: '#/components/responses/402'
+        '403':
+          $ref: '#/components/responses/403'
+        '405':
+          $ref: '#/components/responses/405'
+        '5XX':
+          $ref: '#/components/responses/5XX'
+        '200':
+          $ref: '#/components/responses/friendResponse'
+  /friends/{id}:
+    patch:
+      security:
+        - bearerAuth: []
+      tags:
+        - friends
+      summary: Accept friend request.
+      parameters:
+        - name: id
+          in: path
+          description: ID of user to accept friend request
+          required: true
+          schema:
+            type: string
+            example: 'bcaa40fa-32fd-447b-9f6f-0eac1786e239'
+          style: simple
+      responses:
+        '401':
+          $ref: '#/components/responses/401'
+        '402':
+          $ref: '#/components/responses/402'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '405':
+          $ref: '#/components/responses/405'
+        '5XX':
+          $ref: '#/components/responses/5XX'
+        '200':
+          $ref: '#/components/responses/friendResponse'
+    delete:
+      security:
+        - bearerAuth: []
+      tags:
+        - friends
+      summary: Delete friend or refuse friend request.
+      parameters:
+        - name: id
+          in: path
+          description: ID of user to delete friend or refuse friend request
+          required: true
+          schema:
+            type: string
+            example: 'bcaa40fa-32fd-447b-9f6f-0eac1786e239'
+          style: simple
+      responses:
+        '401':
+          $ref: '#/components/responses/401'
+        '402':
+          $ref: '#/components/responses/402'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '405':
+          $ref: '#/components/responses/405'
+        '5XX':
+          $ref: '#/components/responses/5XX'
+        '200':
+          $ref: '#/components/responses/friendResponse'
 
 components:
   responses:
-    "401":
-      description: "Unauthorized"
-    "402":
-      description: "Payment required"
-    "403":
-      description: "Forbidden"
-    "404":
-      description: "Resource not found"
-    "405":
-      description: "Invalid input (e.g. invalid fields, invalid format)"
-    "5XX":
-      description: "Server error"
+    '401':
+      description: 'Unauthorized'
+    '402':
+      description: 'Payment required'
+    '403':
+      description: 'Forbidden'
+    '404':
+      description: 'Resource not found'
+    '405':
+      description: 'Invalid input (e.g. invalid fields, invalid format)'
+    '5XX':
+      description: 'Server error'
+    '422':
+      description: 'Validation error'
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    field:
+                      type: string
+                      example: 'email'
+                    message:
+                      type: string
+                      example: 'The email is already taken'
+                    rule:
+                      type: string
+                      example: 'unique'
+    friendResponse:
+      description: 'Response when you make request related to friend'
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              friends:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+              friendRequestsSent:
+                type: array
+                description: 'List of friend request sent by the user & need to be accepted by the other user'
+                items:
+                  $ref: '#/components/schemas/User'
+              friendRequestsReceived:
+                type: array
+                description: 'List of friend request received by the user & need to be accepted by the user'
+                items:
+                  $ref: '#/components/schemas/User'
+
   securitySchemes:
     bearerAuth:
       type: http
@@ -216,16 +612,16 @@ components:
       properties:
         id:
           type: string
-          example: "bcaa40fa-32fd-447b-9f6f-0eac1786e239"
+          example: 'bcaa40fa-32fd-447b-9f6f-0eac1786e239'
         pseudo:
           type: string
-          example: "JohnDoe"
+          example: 'JohnDoe'
         steamId:
           type: number
           example: 76561198000000000
         userImage:
           type: string
-          example: "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/00/"
+          example: 'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/00/'
         created_at:
           type: string
           format: date-time
@@ -235,13 +631,61 @@ components:
     Users:
       type: array
       items:
-        $ref: "#/components/schemas/User"
+        $ref: '#/components/schemas/User'
     Permission:
-      properties:
-        name:
-          type: string
-          example: "ticket:create"
+      example: 'user:read'
     Permissions:
       type: array
       items:
-        $ref: "#/components/schemas/Permission"
+        $ref: '#/components/schemas/Permission'
+    Ticket:
+      properties:
+        id:
+          type: integer
+          example: 164
+        title:
+          type: string
+          example: 'My ticket'
+        terminated:
+          type: boolean
+          example: false
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    TicketMessage:
+      properties:
+        id:
+          type: integer
+          example: 164
+        message:
+          type: string
+          example: 'My ticket'
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    TicketWithAllRelation:
+      allOf:
+        - $ref: '#/components/schemas/Ticket'
+        - type: object
+          properties:
+            sender:
+              $ref: '#/components/schemas/User'
+            members:
+              type: array
+              items:
+                $ref: '#/components/schemas/User'
+            messages:
+              type: array
+              items:
+                allOf:
+                  - $ref: '#/components/schemas/TicketMessage'
+                  - type: object
+                    properties:
+                      sender:
+                        $ref: '#/components/schemas/User'

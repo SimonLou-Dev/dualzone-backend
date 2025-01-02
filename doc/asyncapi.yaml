@@ -1,16 +1,36 @@
 asyncapi: '2.6.0'
+id: 'https://github.com/dualzone/website-backend'
 info:
   title: Create an AsyncAPI document for dualzone api websocket
   version: '1.0.0'
   description: This is a sample server for a dualzone api websocket, you must be connected to campus VPN or run local docker image
+  contact:
+    name: Dualzone
+    url: 'https://dualzone.gg'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
 servers:
   production:
     url: wss-primary.slack.com
     protocol: wss
     description: Slack's server in Socket Mode for real-time communication
+tags:
+  - name: users
+    description: Operations about users
+  - name: notifications
+    description: Operations about notifications
 channels:
-  users/(userUUID):
+  users/{userUUID}:
+    parameters:
+      userUUID:
+        description: The unique identifier of the user
+        schema:
+          type: string
+          examples:
+            - '123e4567-e89b-12d3-a456-426614174000'
     subscribe:
+      operationId: 'userEvents'
       description: List of all event related to a user
       message:
         oneOf:
@@ -19,28 +39,141 @@ channels:
           - $ref: '#/components/messages/groupLeaderChanged'
           - $ref: '#/components/messages/groupMemberJoined'
           - $ref: '#/components/messages/groupMemberLeaved'
+  users/{userUUID}/friends:
+    parameters:
+      userUUID:
+        description: The unique identifier of the user
+        schema:
+          type: string
+          examples:
+            - '123e4567-e89b-12d3-a456-426614174000'
+    subscribe:
+      operationId: 'userFriendsEvents'
+      description: List of all event related to a user
+      message:
+        $ref: '#/components/messages/friendMessageEvents'
+  users/{userUUID}/notify:
+    parameters:
+      userUUID:
+        description: The unique identifier of the user
+        schema:
+          type: string
+          examples:
+            - '123e4567-e89b-12d3-a456-426614174000'
+    subscribe:
+      operationId: 'userNotification'
+      description: User notification
+      message:
+        $ref: '#/components/messages/notification'
+  tickets/{ticketId}:
+    parameters:
+      ticketId:
+        description: The unique identifier of the user
+        schema:
+          type: number
+          examples:
+            - 123
+    subscribe:
+      operationId: 'ticketEvents'
+      description: List of all event related to a ticket
+      message:
+        oneOf:
+          - $ref: '#/components/messages/ticketClosed'
+          - $ref: '#/components/messages/ticketMemberJoined'
+          - $ref: '#/components/messages/ticketMessageSent'
 components:
   messages:
     groupCreated:
+      messageId: groupCreated
       summary: Send when a group is created
       payload:
         $ref: '#/components/schemas/groupBasics'
     groupDeleted:
+      messageId: groupDeleted
       summary: Send when a group is deleted
       payload:
         $ref: '#/components/schemas/groupBasics'
     groupLeaderChanged:
+      messageId: groupLeaderChanged
       summary: Send when group leader is changed
       payload:
         $ref: '#/components/schemas/groupLeader'
     groupMemberJoined:
+      messageId: groupMemberJoined
       summary: Send when member joined a group
       payload:
         $ref: '#/components/schemas/groupMember'
     groupMemberLeaved:
+      messageId: groupMemberLeaved
       summary: Send when member leaved a group
       payload:
         $ref: '#/components/schemas/groupMember'
+    notification:
+      messageId: notification
+      summary: Send when a notification is fired
+      payload:
+        type: object
+        properties:
+          message:
+            type: string
+            example: 'You have been registered on dualzone.gg'
+    ticketClosed:
+      messageId: ticketClosed
+      summary: Send when a ticket is closed
+      payload:
+        type: object
+        properties:
+          event:
+            type: string
+            enum:
+              - ticketClosed
+          data:
+            type: object
+            properties:
+              ticketId:
+                type: number
+    ticketMemberJoined:
+      messageId: ticketMemberJoined
+      summary: Send when member joined a ticket
+      payload:
+        type: object
+        properties:
+          event:
+            type: string
+            enum:
+              - ticketMemberJoined
+          data:
+            type: object
+            properties:
+              ticketId:
+                type: number
+              member:
+                type: string
+
+    ticketMessageSent:
+      messageId: ticketMessageSent
+      summary: Send when a message is sent to a ticket
+      payload:
+        type: object
+        properties:
+          event:
+            type: string
+            enum:
+              - ticketMessageSent
+          data:
+            type: object
+            properties:
+              ticketId:
+                type: number
+              message:
+                type: string
+              sender:
+                type: string
+    friendMessageEvents:
+      messageId: friendMessageEvents
+      summary: Send when a message is sent to a friend
+      payload:
+        $ref: '#/components/schemas/friendsEvents'
   schemas:
     groupBasics:
       type: object
@@ -84,5 +217,18 @@ components:
               type: string
             member:
               type: string
-
-
+    friendsEvents:
+      type: object
+      properties:
+        event:
+          type: string
+          enum:
+            - friendRequestSent
+            - friendRequestAccepted
+            - friendRequestRefused
+            - friendshipDeleted
+        data:
+          type: object
+          properties:
+            userId:
+              type: string

@@ -10,6 +10,7 @@ import env from '#start/env'
 import { AccessToken } from '@adonisjs/auth/access_tokens'
 // @ts-ignore
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import PermissionService from '#services/playerManagement/permission_service'
 
 export default class UserAuthController {
   private steamAuthService: SteamAuthService
@@ -59,7 +60,7 @@ export default class UserAuthController {
     const user: User = auth.getUserOrFail()
     let token = await UserAuthController.updateTokenExpiry(auth.user!.currentAccessToken, user)
     user.load('friends')
-    const permissions: string[] = []
+    const permissions: string[] = await PermissionService.getAllUserPermsString(user)
     return response.json({
       token: {
         value: token === null ? token : token.value!.release(),

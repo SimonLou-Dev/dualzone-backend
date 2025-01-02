@@ -1,6 +1,6 @@
 import { BaseEvent } from '@adonisjs/core/events'
 import Group from '#models/group'
-import transmit from "@adonisjs/transmit/services/main";
+import transmit from '@adonisjs/transmit/services/main'
 
 export default class GroupDelete extends BaseEvent {
   /**

@@ -38,6 +38,16 @@ export default class PermissionService {
     return userHasRight
   }
 
+  public static async getAllUserPermsString(user: User): Promise<string[]> {
+    let perms: Permission[] = await this.fetchUserPerms(user)
+    let permsString: string[] = []
+
+    perms.map((perm) => {
+      permsString.push(perm.name)
+    })
+    return permsString
+  }
+
   public static async getPermissionFromString(perm: string): Promise<Permission[]> {
     return await this.resolvPerm(perm)
   }
