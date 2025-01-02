@@ -1,7 +1,7 @@
 import Ticket from '#models/ticket'
 import User from '#models/user'
 import { BaseEvent } from '@adonisjs/core/events'
-import transmit from "@adonisjs/transmit/services/main";
+import transmit from '@adonisjs/transmit/services/main'
 
 export default class TicketCreated extends BaseEvent {
   /**

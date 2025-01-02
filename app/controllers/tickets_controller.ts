@@ -2,7 +2,11 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import TicketService from '#services/playerManagement/ticket_service'
 import User from '#models/user'
-import {addMemberValidator, createTicketMessageValidator, createTicketValidator} from '#validators/ticket'
+import {
+  addMemberValidator,
+  createTicketMessageValidator,
+  createTicketValidator,
+} from '#validators/ticket'
 import TicketPolicy from '#policies/ticket_policy'
 import Ticket from '#models/ticket'
 

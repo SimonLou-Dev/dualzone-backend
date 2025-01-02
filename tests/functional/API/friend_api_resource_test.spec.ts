@@ -1,12 +1,12 @@
 import { test } from '@japa/runner'
-import User from "#models/user";
-import {UserFactory} from "#database/factories/user";
-import db from "@adonisjs/lucid/services/db";
-import Role from "#models/role";
-import RoleService from "#services/playerManagement/role_service";
-import logger from "@adonisjs/core/services/logger";
-import emitter from "@adonisjs/core/services/emitter";
-import FriendRequestAccepted from "#events/Friends/friend_request_accepted";
+import User from '#models/user'
+import { UserFactory } from '#database/factories/user'
+import db from '@adonisjs/lucid/services/db'
+import Role from '#models/role'
+import RoleService from '#services/playerManagement/role_service'
+import logger from '@adonisjs/core/services/logger'
+import emitter from '@adonisjs/core/services/emitter'
+import FriendRequestAccepted from '#events/Friends/friend_request_accepted'
 
 test.group('Friends Controller Tests', (group) => {
   let otherUser = new User()
@@ -29,74 +29,70 @@ test.group('Friends Controller Tests', (group) => {
     response.assertBodyContains({
       friends: [],
       friendRequestSent: [],
-      friendRequestReceived: []
+      friendRequestReceived: [],
     })
   })
 
   test('Get list of friends (as user) [request, friends]', async ({ client }) => {
     let user = await UserFactory.create()
     // Create a friend relationship
-    await db.table('player_has_friends').insert([
-      { user_id: user.id, friend_id: otherUser.id, accepted: true }
-    ])
+    await db
+      .table('player_has_friends')
+      .insert([{ user_id: user.id, friend_id: otherUser.id, accepted: true }])
 
     // Create another user who sent a friend request
     const requestingUser = await UserFactory.create()
-    await db.table('player_has_friends').insert([
-      { user_id: requestingUser.id, friend_id: user.id, accepted: false }
-    ])
+    await db
+      .table('player_has_friends')
+      .insert([{ user_id: requestingUser.id, friend_id: user.id, accepted: false }])
 
     const response = await client.get('/friends').loginAs(user)
 
     response.assertStatus(200)
     response.assertBodyContains({
-      friends: [{
-        id: otherUser.id
-      }],
+      friends: [
+        {
+          id: otherUser.id,
+        },
+      ],
       friendRequestSent: [],
-      friendRequestReceived: [{
-        id: requestingUser.id
-      }]
+      friendRequestReceived: [
+        {
+          id: requestingUser.id,
+        },
+      ],
     })
   })
 
   test('Send friend request', async ({ client }) => {
     let user = await UserFactory.create()
 
-
-    const response = await client
-      .post('/friends')
-      .loginAs(user)
-      .json({
-        userId: otherUser.id
-      })
+    const response = await client.post('/friends').loginAs(user).json({
+      userId: otherUser.id,
+    })
 
     response.assertStatus(200)
     response.assertBodyContains({
       friends: [],
-      friendRequestSent: [{
-        id: otherUser.id
-      }],
-      friendRequestReceived: []
+      friendRequestSent: [
+        {
+          id: otherUser.id,
+        },
+      ],
+      friendRequestReceived: [],
     })
-
-
-
   })
 
   test('Send friend request (on existing request)', async ({ client, assert }) => {
     let user = await UserFactory.create()
     // Create existing friendship
-    await db.table('player_has_friends').insert([
-      { user_id: user.id, friend_id: otherUser.id, accepted: false }
-    ])
+    await db
+      .table('player_has_friends')
+      .insert([{ user_id: user.id, friend_id: otherUser.id, accepted: false }])
 
-    const response = await client
-      .post('/friends')
-      .loginAs(user)
-      .json({
-        userId: otherUser.id
-      })
+    const response = await client.post('/friends').loginAs(user).json({
+      userId: otherUser.id,
+    })
 
     response.assertStatus(200)
     const friendships = await db
@@ -107,7 +103,11 @@ test.group('Friends Controller Tests', (group) => {
     assert.equal(friendships.length, 1)
   })
 
-  test('Send friend request accepts existing friend request', async ({ client, assert, cleanup }) => {
+  test('Send friend request accepts existing friend request', async ({
+    client,
+    assert,
+    cleanup,
+  }) => {
     const event = emitter.fake()
     cleanup(() => {
       emitter.restore()
@@ -115,16 +115,13 @@ test.group('Friends Controller Tests', (group) => {
 
     let user = await UserFactory.create()
     // Create existing friend request from other user
-    await db.table('player_has_friends').insert([
-      { user_id: otherUser.id, friend_id: user.id, accepted: false }
-    ])
+    await db
+      .table('player_has_friends')
+      .insert([{ user_id: otherUser.id, friend_id: user.id, accepted: false }])
 
-    const response = await client
-      .post('/friends')
-      .loginAs(user)
-      .json({
-        userId: otherUser.id
-      })
+    const response = await client.post('/friends').loginAs(user).json({
+      userId: otherUser.id,
+    })
 
     response.assertStatus(200)
     event.assertEmitted(FriendRequestAccepted)
@@ -138,11 +135,13 @@ test.group('Friends Controller Tests', (group) => {
     assert.equal(friendships.length, 2)
     logger.warn(response.body)
     response.assertBodyContains({
-      friends: [{
-        id: otherUser.id
-      }],
+      friends: [
+        {
+          id: otherUser.id,
+        },
+      ],
       friendRequestSent: [],
-      friendRequestReceived: []
+      friendRequestReceived: [],
     })
   })
 
@@ -150,13 +149,11 @@ test.group('Friends Controller Tests', (group) => {
     let user = await UserFactory.create()
 
     // Create pending friend request
-    await db.table('player_has_friends').insert([
-      { user_id: otherUser.id, friend_id: user.id, accepted: false }
-    ])
+    await db
+      .table('player_has_friends')
+      .insert([{ user_id: otherUser.id, friend_id: user.id, accepted: false }])
 
-    const response = await client
-      .patch(`/friends/${otherUser.id}`)
-      .loginAs(user)
+    const response = await client.patch(`/friends/${otherUser.id}`).loginAs(user)
 
     response.assertStatus(200)
 
@@ -167,8 +164,7 @@ test.group('Friends Controller Tests', (group) => {
       .whereIn('friend_id', [user.id, otherUser.id])
 
     assert.equal(friendships.length, 2)
-    assert.isTrue(friendships.every(f => f.accepted))
-
+    assert.isTrue(friendships.every((f) => f.accepted))
   })
 
   test('Destroy removes friendship', async ({ client, assert }) => {
@@ -176,13 +172,10 @@ test.group('Friends Controller Tests', (group) => {
     // Create accepted friendship
     await db.table('player_has_friends').insert([
       { user_id: user.id, friend_id: otherUser.id, accepted: true },
-      { user_id: otherUser.id, friend_id: user.id, accepted: true }
+      { user_id: otherUser.id, friend_id: user.id, accepted: true },
     ])
 
-
-    const response = await client
-      .delete(`/friends/${otherUser.id}`)
-      .loginAs(user)
+    const response = await client.delete(`/friends/${otherUser.id}`).loginAs(user)
 
     response.assertStatus(200)
 
@@ -193,19 +186,16 @@ test.group('Friends Controller Tests', (group) => {
       .whereIn('friend_id', [user.id, otherUser.id])
 
     assert.equal(friendships.length, 0)
-
   })
 
   test('destroy rejects friend request', async ({ client, assert }) => {
     let user = await UserFactory.create()
     // Create pending friend request
-    await db.table('player_has_friends').insert([
-      { user_id: otherUser.id, friend_id: user.id, accepted: false }
-    ])
+    await db
+      .table('player_has_friends')
+      .insert([{ user_id: otherUser.id, friend_id: user.id, accepted: false }])
 
-    const response = await client
-      .delete(`/friends/${otherUser.id}`)
-      .loginAs(user)
+    const response = await client.delete(`/friends/${otherUser.id}`).loginAs(user)
 
     response.assertStatus(200)
 
@@ -220,24 +210,18 @@ test.group('Friends Controller Tests', (group) => {
 
   test('validates user exists when sending request', async ({ client }) => {
     let user = await UserFactory.create()
-    const response = await client
-      .post('/friends')
-      .loginAs(user)
-      .json({
-        userId: 'non-existent-id'
-      })
+    const response = await client.post('/friends').loginAs(user).json({
+      userId: 'non-existent-id',
+    })
 
     response.assertStatus(422)
   })
 
   test('prevents self-friend requests', async ({ client }) => {
     let user = await UserFactory.create()
-    const response = await client
-      .post('/friends')
-      .loginAs(user)
-      .json({
-        userId: user.id
-      })
+    const response = await client.post('/friends').loginAs(user).json({
+      userId: user.id,
+    })
 
     response.assertStatus(422)
   })
@@ -246,10 +230,10 @@ test.group('Friends Controller Tests', (group) => {
       client.get('/friends'),
       client.post('/friends').json({ userId: '1' }),
       client.patch('/friends/1'),
-      client.delete('/friends/1')
+      client.delete('/friends/1'),
     ])
 
-    responses.forEach(response => {
+    responses.forEach((response) => {
       response.assertStatus(401)
     })
   })

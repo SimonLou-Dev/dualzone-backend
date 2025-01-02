@@ -13,7 +13,6 @@ export default class TicketPolicy extends BasePolicy {
     await target.load('members')
     await target.load('sender')
 
-
     if (target.members.map((member) => member.id).includes(user.id)) return true
     else if (target.sender.id === user.id) return true
     else return await PermissionService.userCan(user, 'ticket:viewAll')

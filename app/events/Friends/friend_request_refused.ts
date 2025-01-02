@@ -25,6 +25,5 @@ export default class FriendRequestRefused extends BaseEvent {
       event: 'friendRequestRefused',
       data: { userId: local.id },
     })
-
   }
 }

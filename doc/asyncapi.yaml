@@ -28,9 +28,9 @@ channels:
         schema:
           type: string
           examples:
-            - "123e4567-e89b-12d3-a456-426614174000"
+            - '123e4567-e89b-12d3-a456-426614174000'
     subscribe:
-      operationId: "userEvents"
+      operationId: 'userEvents'
       description: List of all event related to a user
       message:
         oneOf:
@@ -46,9 +46,9 @@ channels:
         schema:
           type: string
           examples:
-            - "123e4567-e89b-12d3-a456-426614174000"
+            - '123e4567-e89b-12d3-a456-426614174000'
     subscribe:
-      operationId: "userFriendsEvents"
+      operationId: 'userFriendsEvents'
       description: List of all event related to a user
       message:
         $ref: '#/components/messages/friendMessageEvents'
@@ -59,9 +59,9 @@ channels:
         schema:
           type: string
           examples:
-            - "123e4567-e89b-12d3-a456-426614174000"
+            - '123e4567-e89b-12d3-a456-426614174000'
     subscribe:
-      operationId: "userNotification"
+      operationId: 'userNotification'
       description: User notification
       message:
         $ref: '#/components/messages/notification'
@@ -74,7 +74,7 @@ channels:
           examples:
             - 123
     subscribe:
-      operationId: "ticketEvents"
+      operationId: 'ticketEvents'
       description: List of all event related to a ticket
       message:
         oneOf:
@@ -116,7 +116,7 @@ components:
         properties:
           message:
             type: string
-            example: "You have been registered on dualzone.gg"
+            example: 'You have been registered on dualzone.gg'
     ticketClosed:
       messageId: ticketClosed
       summary: Send when a ticket is closed
@@ -218,23 +218,17 @@ components:
             member:
               type: string
     friendsEvents:
-        type: object
-        properties:
-          event:
-            type: string
-            enum:
-                - friendRequestSent
-                - friendRequestAccepted
-                - friendRequestRefused
-                - friendshipDeleted
-          data:
-            type: object
-            properties:
-              userId:
-                type: string
-
-
-
-
-
-
+      type: object
+      properties:
+        event:
+          type: string
+          enum:
+            - friendRequestSent
+            - friendRequestAccepted
+            - friendRequestRefused
+            - friendshipDeleted
+        data:
+          type: object
+          properties:
+            userId:
+              type: string

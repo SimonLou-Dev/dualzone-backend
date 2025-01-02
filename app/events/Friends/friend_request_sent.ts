@@ -25,6 +25,5 @@ export default class FriendRequestSent extends BaseEvent {
       event: 'friendRequestReceived',
       data: { userId: user.id },
     })
-
   }
 }

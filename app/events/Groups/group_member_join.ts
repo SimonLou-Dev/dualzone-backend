@@ -1,7 +1,7 @@
 import { BaseEvent } from '@adonisjs/core/events'
 import User from '#models/user'
 import Group from '#models/group'
-import transmit from "@adonisjs/transmit/services/main";
+import transmit from '@adonisjs/transmit/services/main'
 
 export default class GroupMemberJoin extends BaseEvent {
   /**

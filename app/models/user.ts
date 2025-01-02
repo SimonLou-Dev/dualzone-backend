@@ -48,7 +48,7 @@ export default class User extends BaseModel {
     pivotColumns: ['accepted'],
     onQuery: (query) => {
       query.where('accepted', true)
-    }
+    },
   })
   declare friends: relations.ManyToMany<typeof User>
 
@@ -76,7 +76,7 @@ export default class User extends BaseModel {
     pivotColumns: ['accepted'],
     onQuery: (query) => {
       query.where('accepted', false)
-    }
+    },
   })
   declare friendRequestSent: relations.ManyToMany<typeof User>
 
@@ -87,10 +87,7 @@ export default class User extends BaseModel {
     pivotColumns: ['accepted'],
     onQuery: (query) => {
       query.where('accepted', false)
-    }
+    },
   })
   declare friendRequestReceived: relations.ManyToMany<typeof User>
-
-
-
 }

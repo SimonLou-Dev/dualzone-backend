@@ -1,4 +1,3 @@
-
 name: Check & deploy API documentation
 permissions:
   contents: read
@@ -48,5 +47,3 @@ jobs:
           ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH: gh-pages
           FOLDER: generated-html
-
-

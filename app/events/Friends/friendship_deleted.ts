@@ -25,6 +25,5 @@ export default class FriendshipDeleted extends BaseEvent {
       event: 'friendshipDeleted',
       data: { userId: local.id },
     })
-
   }
 }
