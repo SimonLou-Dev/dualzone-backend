@@ -1,105 +1,135 @@
-# /!\ Avant chaque push /!\
+# 🚀 **Guide de Développement - Backend Docker** 🚀
 
-Surtout si c'est le dernier de votre feature & hotfix
-Commandes de la partie [lint](#Lint) obligatoires
-<br>
-<br>
-Si c'est le dernier commit tous les tests doivent passer
+## /!\ **Avant chaque push /!\**
 
-# Liste des branchs
+Surtout si c'est le dernier de votre **feature** ou **hotfix**, **les commandes de la partie [Lint](#Lint) sont obligatoires**.
 
-- dev : branch globale de deb
-- feature/ : ajout d'un élément (environnement de dev)
-- issue- : fix d'un bug (environnement de dev)
-- hotfix : création d'un hotfix (environnement de dev)
-- testing : environnement evo
-- prod : Plateforme en production
+### 🔴 **Si c'est le dernier commit, tous les tests doivent passer avant le push**.
 
-# Travailler sur une nouvelle feature
+---
 
-## Création de la branch
+## 🛠 **Liste des Branches** 🛠
 
-```shell
+- **`dev`** : Branche globale de développement.
+- **`feature/`** : Ajout d'une nouvelle fonctionnalité (environnement de développement).
+- **`issue-`** : Fix d'un bug (environnement de développement).
+- **`hotfix`** : Création d'un hotfix (environnement de développement).
+- **`testing`** : Environnement de tests (EVO).
+- **`prod`** : Plateforme en production.
+
+---
+
+## 🌱 **Travailler sur une nouvelle feature** 🌱
+
+### 1. **Création de la branche** :
+
+Pour créer et basculer sur une nouvelle branche pour une fonctionnalité :
+
+```bash
 git branch feature/nomDeLaFeature
 git switch feature/nomDeLaFeature
 ```
 
-## Push de la branch
+### 2. Push de la branche :
 
-```shell
+Lorsque vous avez terminé le développement de votre fonctionnalité, poussez votre branche vers le dépôt distant :
+
+```bash
 git push -u origin feature/nomDeLaFeature
 ```
 
-## Récupération d'un branch distante
+### 3. Récupération d'une branche distante :
 
-```shell
+Pour récupérer une branche distante et vous y placer :
+
+```bash
 git fetch origin
 git checkout feature/nomDeLaFeature
 git pull
 ```
 
-# Outils de devs
+---
 
-**Installation de [node](https://nodejs.org/en/) > vv22.0.0**
+## 🧰 Outils de Développement 🧰
+### Installation de Node.js :
+Assurez-vous d'avoir une version de Node.js > v22.0.0. Téléchargez la dernière version stable depuis Node.js.
 
-Installation de yarn
-
-```shell
+### Installation de Yarn :
+Installez Yarn globalement en utilisant npm :
+```bash
 npm install --global yarn
 ```
-
-## Dépendances
-
-Installation des dépendances de dev
-
-```shell
+---
+## ⚙️ Gestion des Dépendances ⚙️
+### 1. Installation des dépendances
+#### Dépendances de développement :
+```bash
 yarn install --include=dev
 ```
-
-Installation des dépendances prod
-
-```shell
+#### Dépendances de production :
+```bash
 yarn install
 ```
+---
 
-## Having database and other
+## 🔄 Lancer l'environnement Docker de développement  Frontend 🔄
+### Base de données et autres services :
 
-```shell
-docker compose -f .\docker-compose.dev.yml up -d
+Lancez tous les services nécessaires et le backend en utilisant Docker Compose (fichier `.dev.yml`) :
+```bash
+docker compose -f ./docker-compose.dev.yml up -d
 ```
 
-## Running dev server
+---
 
-```shell
+## 🚀 Lancer l'environnement Docker de développement  Backend 🚀
+### Base de données et autres services :
+
+Lancez tous les services nécessaires pour le backend en utilisant Docker Compose (fichier `.dev-back.yml`) :
+```bash
+docker compose -f ./docker-compose.dev-back.yml up -d
+```
+Cela démarre les conteneurs pour la base de données et les autres services de développement.
+### Lancer le serveur de développement :
+
+Une fois les services Docker démarrés, vous pouvez lancer le serveur de développement :
+```bash
 yarn dev
 ```
+---
+## 🧪 Tests 🧪
+### Lancer les tests
 
-Disponible via http://localhost:3333
-
-## Tests
-
-```shell
+Pour exécuter les tests de votre projet, utilisez :
+```bash
 yarn run test
 ```
+Cela va exécuter les tests automatisés pour vérifier que votre code fonctionne comme prévu.
+---
 
-## Lint
+## ⚡ Linting & Formatage du Code ⚡
+###  Linting (avec ESLint)
 
-Runs ESLint
-
-```shell
+Pour vérifier la qualité de votre code et l'adhésion aux règles ESLint, exécutez :
+```bash
 yarn run lint --fix
 ```
 
-Runs prettier
+Cela corrigera automatiquement les erreurs de style lorsque c'est possible.
+### Formatage du code (avec Prettier)
 
-```shell
+Pour formater le code selon les règles définies dans votre projet, exécutez :
+```bash
 yarn run format
 ```
-
-Typecheck
-
-```shell
+## Vérification des Types (TypeScript)
+Vérifier les types avec la commande suivante :
+```bash
 yarn run typecheck
 ```
+---
+## ⚠️ Bonnes Pratiques de Développement ⚠️
 
-**Pensez à refaire vos tests après on sait jamais**
+1. **Gardez votre code propre et bien formaté**. Utilisez les commandes de linting et de formatage avant de chaque push.
+2. **Vérifiez les tests** avant de pousser des changements. Cela garantit que vous ne poussez que des modifications fiables et fonctionnelles.
+
