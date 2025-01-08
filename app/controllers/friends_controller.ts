@@ -29,6 +29,7 @@ export default class FriendsController {
           {
             field: 'userId',
             message: 'You cannot send a friend request to yourself',
+            rule: 'selfRequestLoop',
           },
         ],
       })

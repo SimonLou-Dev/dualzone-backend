@@ -71,7 +71,7 @@ docker compose -f .\docker-compose.dev.yml up -d
 ## Running dev server
 
 ```shell
-node ace serve --hmr
+yarn dev
 ```
 
 Disponible via http://localhost:3333

@@ -28,28 +28,41 @@ export default class RankService {
     let teamBRank = 0
     teamA.players.map(async (member) => {
       let rank = await this.getUserRank(member, teamA.party.mode.game)
-      teamARank *= Math.pow(10, rank.rank / 500)
+      teamARank *= Math.pow(10, rank.rank / 100)
     })
     teamB.players.map(async (member) => {
       let rank = await this.getUserRank(member, teamA.party.mode.game)
-      teamBRank *= Math.pow(10, rank.rank / 500)
+      teamBRank *= Math.pow(10, rank.rank / 100)
     })
 
     return teamARank / (teamARank + teamBRank)
   }
 
-  public static async calculateRank(user: User, game: Game, score: number, winProbability: number) {
+  public static async calculateRank(
+    user: User,
+    game: Game,
+    score: number,
+    winProbability: number
+  ): Promise<number> {
     await user.load('ranks')
     let rank = await this.getUserRank(user, game)
     let devCoef = 0
 
-    if (rank.playedGames <= 5) devCoef = 70
-    else if (rank.playedGames > 5 && rank.playedGames <= 30) devCoef = 40
-    else devCoef = 20
+    if (rank.playedGames <= 5) devCoef = 350
+    else if (rank.playedGames > 5 && rank.playedGames <= 30) devCoef = 200
+    else devCoef = 100
 
-    if (rank.rank >= 4400) devCoef /= 2
+    if (rank.rank >= 3000) devCoef /= 2
 
-    return rank.rank + devCoef * (score - winProbability)
+    return this.reduceLostRank(rank, rank.rank + devCoef * (score - winProbability))
+  }
+
+  private static reduceLostRank(rank: UserRank, next: number): number {
+    if (rank.rank < next) return next
+    if (next >= 1000) return next
+    const diff = rank.rank - next
+
+    return rank.rank - diff / 2
   }
 
   public static async getUserRank(user: User, game: Game): Promise<UserRank> {
