@@ -1,0 +1,46 @@
+# Use postgres/example user/password credentials
+version: '3.9'
+
+services:
+  pgsql:
+    image: postgres
+    restart: always
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_PASSWORD: dualzone
+      POSTGRES_USER: dualzone
+      POSTGRES_DB: dualzone
+    volumes:
+      - postgres:/var/lib/postgresql/data
+  redis:
+    image: redis/redis-stack-server:6.2.6-v17
+    restart: always
+    ports:
+      - '6379:6379'
+    command: redis-server --save 20 1 --loglevel warning --requirepass dualzone --loadmodule /opt/redis-stack/lib/rejson.so
+    volumes:
+      - redis:/data
+  minio:
+    image: docker.io/bitnami/minio:2022
+    ports:
+      - '9000:9000'
+      - '9001:9001'
+    volumes:
+      - minio_data:/data
+    environment:
+      - MINIO_ROOT_USER=dualzone
+      - MINIO_ROOT_PASSWORD=dualzone
+      - MINIO_DEFAULT_BUCKETS=dualzone
+  matchmaker:
+    image: ghcr.io/dualzone/dualmatch:dev
+    restart: always
+    environment:
+        REDIS_HOST: redis
+        REDIS_PORT: 6379
+        REDIS_PASSWORD: dualzone
+        REDIS_DB: 0
+volumes:
+  redis:
+  postgres:
+  minio_data:

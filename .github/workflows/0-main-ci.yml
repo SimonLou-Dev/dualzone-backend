@@ -1,0 +1,15 @@
+name: Node.js prod CI
+on:
+  push:
+    branches: ['prod', 'dev', 'testing']
+  pull_request:
+    branches: ['prod', 'dev', 'testing']
+jobs:
+  test:
+    uses: ./.github/workflows/test.yml
+  bump-rest:
+    uses: ./.github/workflows/bump-rest.yml
+  bump-events:
+    uses: ./.github/workflows/bump-events.yml
+  docker:
+    uses: ./.github/workflows/docker.yml

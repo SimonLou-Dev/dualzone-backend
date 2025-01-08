@@ -32,6 +32,57 @@ services:
       - MINIO_ROOT_USER=dualzone
       - MINIO_ROOT_PASSWORD=dualzone
       - MINIO_DEFAULT_BUCKETS=dualzone
+  matchmaker:
+    image: ghcr.io/dualzone/dualmatch:dev
+    restart: always
+    environment:
+        REDIS_HOST: redis
+        REDIS_PORT: 6379
+        REDIS_PASSWORD: dualzone
+        REDIS_DB: 0
+        NODE_ENV: development
+  backend:
+    image: ghcr.io/dualzone/website-backend:dev
+    restart: always
+    ports:
+      - '3333:3333'
+    environment:
+      - TZ=UTC
+      - PORT=3333
+      - HOST=localhost
+      - LOG_LEVEL=info
+      - APP_KEY=lnmE_sX6-itM87W_GjSyT7W6HvdXqUwq
+      - NODE_ENV=development
+      - # database
+      - DB_HOST=pgsql
+      - DB_PORT=5432
+      - DB_USER=dualzone
+      - DB_PASSWORD=dualzone
+      - DB_DATABASE=dualzone
+      - # driver
+      - SESSION_DRIVER=cookie
+      - DRIVE_DISK=fs
+      - # AWS S3
+      - AWS_ACCESS_KEY_ID=Tn3SHaLjg3jQYPBG
+      - AWS_SECRET_ACCESS_KEY=HgXbnyXPaMPNLzTr9dKYr2H6tnZmEMoO
+      - AWS_REGION=test
+      - S3_BUCKET=dualzone
+      - S3_ENDPOINT=http://localhost:9000
+      - # mail
+      - SMTP_HOST=testtest
+      - SMTP_PORT=test
+      - MAILGUN_API_KEY=test
+      - MAILGUN_DOMAIN=test
+      - # Redis
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=dualzone
+      - DISCORD_CLIENT_ID=test
+      - DISCORD_CLIENT_SECRET=test
+      - STEAM_API_KEY=72D84F637AE8308316E575A086792BC5
+      - STEAM_REALM_NAME=http://localhost:3333
+      - STEAM_CALLBACK_URL=http://localhost:3333/auth/steam/authenticate
+      - FRONT_APP_URL=http://localhost:3000/
 volumes:
   redis:
   postgres:
