@@ -17,10 +17,14 @@ export default class Sanction extends BaseModel {
   declare reason: string
 
   @column()
+  //Number of days from the creation date
+  //0 for permanent
   declare duration: number
 
   @column()
-  declare type: 0 | 1
+  //0 For warn
+  //1 For ban
+  declare type: number
 
   @column()
   declare userId: string

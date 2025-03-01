@@ -13,6 +13,7 @@
 */
 
 export const policies = {
+  SanctionPolicy: () => import('#policies/sanction_policy'),
   TicketPolicy: () => import('#policies/ticket_policy'),
   UserPolicy: () => import('#policies/user_policy'),
 }

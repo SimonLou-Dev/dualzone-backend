@@ -68,3 +68,14 @@ router
     router.delete('/friends/:id', [FriendsController, 'destroy'])
   })
   .use(middleware.auth())
+
+//Sanctions
+router
+  .group(() => {
+    router.get('/users/:userId/sanctions', 'UserSanctionController.listSanction')
+    router.post('/users/:userId/sanctions/warn', 'UserSanctionController.warn')
+    router.post('/users/:userId/sanctions/ban', 'UserSanctionController.ban')
+    router.put('/sanctions/:sanctionId', 'UserSanctionController.update')
+    router.delete('/sanctions/:sanctionId', 'UserSanctionController.delete')
+  })
+  .use(middleware.auth())

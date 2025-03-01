@@ -27,19 +27,34 @@ export default class extends BaseSeeder {
      */
     await this.createPerms(
       '*',
+      //Ticket
       'ticket:viewAll',
       'ticket:view',
       'ticket:close',
       'ticket:write',
       'ticket:open',
+      //User
       'user:view',
       'user:list',
-      'user:edit'
+      'user:edit',
+      //Sanctions
+      'sanction:viewAll',
+      'sanction:warn',
+      'sanction:ban:temp',
+      'sanction:ban:perm',
+      'sanction:update',
+      'sanction:delete'
     )
 
     //Assignation des permissions par role
     await RoleService.addPermsToRole(admin, '*')
-    await RoleService.addPermsToRole(modo, 'ticket:*')
+    await RoleService.addPermsToRole(
+      modo,
+      'ticket:*',
+      'sanction:viewAll',
+      'sanction:warn',
+      'sanction:ban:temp'
+    )
     await RoleService.addPermsToRole(user, 'ticket:view', 'ticket:open')
   }
 
