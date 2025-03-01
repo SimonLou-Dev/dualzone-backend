@@ -12,11 +12,11 @@ export default class SanctionPolicy extends BasePolicy {
     return await PermissionService.userCan(user, 'sanction:warn')
   }
 
-  async banTemp(user: User): Promise<AuthorizerResponse> {
+  async ban_temp(user: User): Promise<AuthorizerResponse> {
     return await PermissionService.userCan(user, 'sanction:ban:temp')
   }
 
-  async banPerm(user: User): Promise<AuthorizerResponse> {
+  async ban_perm(user: User): Promise<AuthorizerResponse> {
     return await PermissionService.userCan(user, 'sanction:ban:perm')
   }
 

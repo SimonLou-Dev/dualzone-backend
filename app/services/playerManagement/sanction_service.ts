@@ -1,7 +1,6 @@
 import Sanction from '#models/sanction'
 import User from '#models/user'
 import { DateTime } from 'luxon'
-import logger from "@adonisjs/core/services/logger";
 
 export default class SanctionService {
   public static async listSanction(player: User): Promise<Sanction[]> {

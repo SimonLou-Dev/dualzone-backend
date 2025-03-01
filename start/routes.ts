@@ -14,6 +14,7 @@ const TicketsController = () => import('#controllers/tickets_controller')
 const FriendsController = () => import('#controllers/friends_controller')
 const UserAuthController = () => import('#controllers/User/user_auth_controller')
 const UserResourceController = () => import('#controllers/User/user_resource_controller')
+const UserSanctionController = () => import('#controllers/User/user_sanction_controller')
 
 router.get('/', async () => {
   return {
@@ -72,10 +73,10 @@ router
 //Sanctions
 router
   .group(() => {
-    router.get('/users/:userId/sanctions', 'UserSanctionController.listSanction')
-    router.post('/users/:userId/sanctions/warn', 'UserSanctionController.warn')
-    router.post('/users/:userId/sanctions/ban', 'UserSanctionController.ban')
-    router.put('/sanctions/:sanctionId', 'UserSanctionController.update')
-    router.delete('/sanctions/:sanctionId', 'UserSanctionController.delete')
+    router.get('/users/:userId/sanctions', [UserSanctionController, 'listSanction'])
+    router.post('/users/:userId/sanctions/warn', [UserSanctionController, 'warn'])
+    router.post('/users/:userId/sanctions/ban', [UserSanctionController, 'ban'])
+    router.put('/sanctions/:sanctionId', [UserSanctionController, 'update'])
+    router.delete('/sanctions/:sanctionId', [UserSanctionController, 'delete'])
   })
   .use(middleware.auth())
