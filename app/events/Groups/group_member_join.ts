@@ -12,11 +12,12 @@ export default class GroupMemberJoin extends BaseEvent {
     public group: Group
   ) {
     super()
+    transmit.broadcast(`group/${group.id}`, {
+      event: 'groupMemberJoined',
+      data: { groupId: group.id, member: user.pseudo },
+    })
+
     group.members.forEach((member) => {
-      transmit.broadcast(`users/${member.id}/group`, {
-        event: 'groupMemberJoined',
-        data: { groupId: group.id, member: user.pseudo },
-      })
       transmit.broadcast(`users/${member.id}/notify`, {
         message: `${user.pseudo} a rejoint le groupe`,
       })

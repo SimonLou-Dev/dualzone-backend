@@ -12,11 +12,12 @@ export default class GroupMemberLeave extends BaseEvent {
     public group: Group
   ) {
     super()
+    transmit.broadcast(`group/${group.id}`, {
+      event: 'groupMemberLeaved',
+      data: { groupId: group.id, member: user.pseudo },
+    })
+
     group.members.forEach((member) => {
-      transmit.broadcast(`users/${member.id}/group`, {
-        event: 'groupMemberLeaved',
-        data: { groupId: group.id, member: user.pseudo },
-      })
       transmit.broadcast(`users/${member.id}/notify`, {
         message: `${user.pseudo} a quitté le groupe`,
       })

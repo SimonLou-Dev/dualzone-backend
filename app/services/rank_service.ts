@@ -5,14 +5,20 @@ import PartyTeam from '#models/party_team'
 import UserRank from '#models/user_rank'
 
 export default class RankService {
-  public static async getTeamRank(group: Group, game: Game): Promise<number> {
+
+
+  public static async getTeamRank(group: Group, game: Game): Promise<{ min: number; max: number; avg: number }> {
     await group.load('members')
     let teamRank = 0
+    let minRank = Infinity
+    let maxRank = 0
     group.members.map(async (member) => {
       let rank = await this.getUserRank(member, game)
+      if(rank.rank < minRank) minRank = rank.rank
+      if(rank.rank > maxRank) maxRank = rank.rank
       teamRank += rank.rank
     })
-    return teamRank / group.members.length
+    return { min: minRank, max: maxRank, avg: teamRank / group.members.length }
   }
 
   public static async calculateWinProbabilityOfTeamA(

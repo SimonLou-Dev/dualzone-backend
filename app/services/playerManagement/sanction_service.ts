@@ -4,9 +4,16 @@ import { DateTime } from 'luxon'
 
 export default class SanctionService {
   public static async listSanction(player: User): Promise<Sanction[]> {
-    return Sanction.query().whereHas('user', (userQ) => {
+    let sanctions: Sanction[] = await Sanction.query().whereHas('user', (userQ) => {
       userQ.where('users.id', player.id)
     })
+
+    for (let sanction of sanctions) {
+      await sanction.load('user')
+      await sanction.load('admin')
+    }
+
+    return sanctions
   }
 
   public static async addWarn(player: User, admin: User, reason: string): Promise<Sanction> {

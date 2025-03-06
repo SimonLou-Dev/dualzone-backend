@@ -1,0 +1,48 @@
+import User from '#models/user'
+import GameMode from '#models/game_mode'
+import Group from '#models/group'
+import redis from '@adonisjs/redis/services/main'
+import { DateTime } from 'luxon'
+import RankService from '#services/rank_service'
+import MatchMakingEnqueued from '#events/MatchMaking/match_making_enqueued'
+import MatchFounded from '#events/MatchMaking/match_founded'
+import Party from '#models/party'
+import PartyTeam from '#models/party_team'
+
+export default class MatchMakingService {
+  public static async pushGroupToQueue(group: Group, gameMode: GameMode) {
+    let rank: { min: number; max: number; avg: number } = await RankService.getTeamRank(
+      group,
+      gameMode.game
+    )
+    await gameMode.load('game')
+    await redis.publish(
+      `mm:${gameMode.game.name}:${gameMode.name}:enqueue`,
+      JSON.stringify({
+        uuid: group.id,
+        time: DateTime.now().toISO(),
+        size: group.size,
+        avgElo: rank.avg,
+        minElo: rank.min,
+        maxElo: rank.max,
+      })
+    )
+
+    await MatchMakingEnqueued.dispatch(group)
+  }
+
+  public static async matchFound(gameMode: GameMode, ...teams: Group[]) {
+    let party: Party = new Party()
+    await party.related('mode').associate(gameMode)
+    await party.save()
+    for (const team of teams) {
+      let teamParty = new PartyTeam()
+      teamParty.score = '0'
+      await teamParty.related('party').associate(party)
+      await teamParty.related('players').attach(team.members.map((member: User) => member.id))
+      await teamParty.save()
+    }
+
+    await MatchFounded.dispatch(party, ...teams)
+  }
+}

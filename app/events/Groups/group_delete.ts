@@ -8,12 +8,13 @@ export default class GroupDelete extends BaseEvent {
    */
   constructor(public group: Group) {
     super()
-    group.members.forEach((member) => {
-      transmit.broadcast(`users/${member.id}/group`, {
-        event: 'groupDeleted',
-        data: { groupId: group.id },
-      })
 
+    transmit.broadcast(`group/${group.id}`, {
+      event: 'groupDeleted',
+      data: { groupId: group.id },
+    })
+
+    group.members.forEach((member) => {
       transmit.broadcast(`users/${member.id}/notify`, {
         message: 'Votre groupe a été supprimé',
       })

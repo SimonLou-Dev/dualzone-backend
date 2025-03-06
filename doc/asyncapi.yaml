@@ -35,10 +35,40 @@ channels:
       message:
         oneOf:
           - $ref: '#/components/messages/groupCreated'
+  group/{groupId}:
+    parameters:
+      groupId:
+        description: The unique identifier of the group
+        schema:
+          type: string
+          examples:
+            - '123e4567-e89b-12d3-a456-426614174000'
+    subscribe:
+      operationId: 'groupEvents'
+      description: List of all event related to a group
+      message:
+        oneOf:
           - $ref: '#/components/messages/groupDeleted'
           - $ref: '#/components/messages/groupLeaderChanged'
           - $ref: '#/components/messages/groupMemberJoined'
           - $ref: '#/components/messages/groupMemberLeaved'
+
+  group/{groupId}/match:
+    parameters:
+      groupId:
+        description: The unique identifier of the group
+        schema:
+          type: string
+          examples:
+            - '123e4567-e89b-12d3-a456-426614174000'
+    subscribe:
+      operationId: 'groupMembersEvents'
+      description: List of all event related to a group when request or is in match
+      message:
+        oneOf:
+          - $ref: '#/components/messages/matchMakingEnqueued'
+          - $ref: '#/components/messages/matchFounded'
+
   users/{userUUID}/friends:
     parameters:
       userUUID:
@@ -149,7 +179,31 @@ components:
                 type: number
               member:
                 type: string
-
+    matchMakingEnqueued:
+      messageId: matchMakingEnqueued
+      summary: Send when group is in queue for match making
+      payload:
+        type: object
+        properties:
+          event:
+            type: string
+            enum:
+              - matchMakingEnqueued
+    matchFounded:
+      messageId: matchFounded
+      summary: Send when group has been matched
+      payload:
+        type: object
+        properties:
+          event:
+            type: string
+            enum:
+              - matchFounded
+          data:
+            type: object
+            properties:
+              matchId:
+                type: string
     ticketMessageSent:
       messageId: ticketMessageSent
       summary: Send when a message is sent to a ticket
