@@ -8,6 +8,7 @@ import MatchMakingEnqueued from '#events/MatchMaking/match_making_enqueued'
 import MatchFounded from '#events/MatchMaking/match_founded'
 import Party from '#models/party'
 import PartyTeam from '#models/party_team'
+import GameServerService from '#services/gameServices/game_server_service'
 
 export default class MatchMakingService {
   public static async pushGroupToQueue(group: Group, gameMode: GameMode) {
@@ -16,6 +17,7 @@ export default class MatchMakingService {
       gameMode.game
     )
     await gameMode.load('game')
+    //TODO : Mettre dans un hset
     await redis.publish(
       `mm:${gameMode.game.name}:${gameMode.name}:enqueue`,
       JSON.stringify({
@@ -42,7 +44,9 @@ export default class MatchMakingService {
       await teamParty.related('players').attach(team.members.map((member: User) => member.id))
       await teamParty.save()
     }
-
+    party.serverId = await GameServerService.configureServer(party)
+    await party.save()
     await MatchFounded.dispatch(party, ...teams)
+
   }
 }
