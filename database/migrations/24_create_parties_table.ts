@@ -6,7 +6,7 @@ export default class extends BaseSchema {
   async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.uuid('id').primary().index()
-      table.uuid('server_id').references('id').inTable('game_servers')
+      table.uuid('server_id')
       table.integer('mode_id').references('id').inTable('game_modes')
       table.boolean('ended').defaultTo(false)
       table.integer('party_time').defaultTo(null).nullable()

@@ -1,7 +1,6 @@
 import { DateTime } from 'luxon'
 import { BaseModel, beforeCreate, belongsTo, column, hasMany } from '@adonisjs/lucid/orm'
 import { randomUUID } from 'node:crypto'
-import GameServer from '#models/game_server'
 import * as relations from '@adonisjs/lucid/types/relations'
 import GameMode from '#models/game_mode'
 import PartyTeam from '#models/party_team'
@@ -33,9 +32,6 @@ export default class Party extends BaseModel {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
-
-  @belongsTo(() => GameServer)
-  declare server: relations.BelongsTo<typeof GameServer>
 
   @belongsTo(() => GameMode)
   declare mode: relations.BelongsTo<typeof GameMode>

@@ -47,6 +47,6 @@ export default class MatchMakingService {
     party.serverId = await GameServerService.configureServer(party)
     await party.save()
     await MatchFounded.dispatch(party, ...teams)
-
+    return party
   }
 }
