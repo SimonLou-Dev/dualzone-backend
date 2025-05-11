@@ -25,7 +25,6 @@ test.group('Service Player Management grouping system - normal', () => {
     await GroupService.createGroup(user)
     //Assert event of group  creation and player join was emitted
     event.assertEmitted(GroupCreated)
-    event.assertEmitted(GroupMemberJoin)
   })
   //Test if we can join a group
   test('Join group', async ({ cleanup }) => {

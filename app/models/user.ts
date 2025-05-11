@@ -8,6 +8,7 @@ import UserRank from '#models/user_rank'
 import Ticket from '#models/ticket'
 import Sanction from '#models/sanction'
 import Report from '#models/report'
+import Group from '#models/group'
 
 export default class User extends BaseModel {
   @column({ isPrimary: true })
@@ -51,6 +52,11 @@ export default class User extends BaseModel {
     },
   })
   declare friends: relations.ManyToMany<typeof User>
+
+  @manyToMany(() => Group, {
+    pivotTable: 'group_has_players',
+  })
+  declare group: relations.ManyToMany<typeof Group>
 
   @manyToMany(() => Role, {
     pivotTable: 'user_has_roles',

@@ -10,11 +10,13 @@
 import router from '@adonisjs/core/services/router'
 import { middleware } from '#start/kernel'
 import transmit from '@adonisjs/transmit/services/main'
+const MatchController = () => import('#controllers/match_controller')
 const TicketsController = () => import('#controllers/tickets_controller')
 const FriendsController = () => import('#controllers/friends_controller')
 const UserAuthController = () => import('#controllers/User/user_auth_controller')
 const UserResourceController = () => import('#controllers/User/user_resource_controller')
 const UserSanctionController = () => import('#controllers/User/user_sanction_controller')
+const DemoController = () => import('#controllers/demo/demo_controller')
 
 router.get('/', async () => {
   return {
@@ -78,5 +80,24 @@ router
     router.post('/users/:userId/sanctions/ban', [UserSanctionController, 'ban'])
     router.put('/sanctions/:sanctionId', [UserSanctionController, 'update'])
     router.delete('/sanctions/:sanctionId', [UserSanctionController, 'delete'])
+  })
+  .use(middleware.auth())
+
+// Match management
+router
+  .group(() => {
+    router.post('/match/enqueue/:modeId', [MatchController, 'request']) // Enqueue the group to MM of gamemode
+    router.get('/match/party/:partyId', [MatchController, 'get_party']) // Get party info
+    router.get('/match/result/:partyId', [MatchController, 'result']) // Get party info
+    router.get('/match/status', [MatchController, 'status']) // Get current user party status
+
+    //Get game modes
+    router.get('/modes/cs2', [MatchController, 'getGameMode'])
+  })
+  .use(middleware.auth())
+
+router
+  .group(() => {
+    router.post('/demo/force_found_match/:modeId', [DemoController, 'force_found_match']) // Force match creation
   })
   .use(middleware.auth())

@@ -5,17 +5,17 @@ import PartyTeam from '#models/party_team'
 import UserRank from '#models/user_rank'
 
 export default class RankService {
-
-
-  public static async getTeamRank(group: Group, game: Game): Promise<{ min: number; max: number; avg: number }> {
-    await group.load('members')
+  public static async getTeamRank(
+    group: Group,
+    game: Game
+  ): Promise<{ min: number; max: number; avg: number }> {
     let teamRank = 0
     let minRank = Infinity
     let maxRank = 0
     group.members.map(async (member) => {
       let rank = await this.getUserRank(member, game)
-      if(rank.rank < minRank) minRank = rank.rank
-      if(rank.rank > maxRank) maxRank = rank.rank
+      if (rank.rank < minRank) minRank = rank.rank
+      if (rank.rank > maxRank) maxRank = rank.rank
       teamRank += rank.rank
     })
     return { min: minRank, max: maxRank, avg: teamRank / group.members.length }
@@ -75,8 +75,16 @@ export default class RankService {
     await user.load('ranks')
     let rank = user.ranks.find((r) => game.id === r.gameId)
 
-    if (rank === undefined) throw new Error("Il faut faire l'erreur...")
+    if (rank === undefined) return await this.createRank(user, game)
+    return rank
+  }
 
+  public static async createRank(user: User, game: Game): Promise<UserRank> {
+    let rank = new UserRank()
+    rank.rank = 1000
+    rank.playedGames = 0
+    rank.gameId = game.id
+    await user.related('ranks').save(rank)
     return rank
   }
 }

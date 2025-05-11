@@ -19,7 +19,7 @@ export default class Party extends BaseModel {
   declare serverId: string
 
   @column()
-  declare modeId: number
+  declare gameModeId: number
 
   @column()
   declare ended: boolean

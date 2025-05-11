@@ -12,16 +12,17 @@ import GameServerService from '#services/gameServices/game_server_service'
 
 export default class MatchMakingService {
   public static async pushGroupToQueue(group: Group, gameMode: GameMode) {
+    await group.load('members')
+    await gameMode.load('game')
     let rank: { min: number; max: number; avg: number } = await RankService.getTeamRank(
       group,
       gameMode.game
     )
-    await gameMode.load('game')
-    //TODO : Mettre dans un hset
-    await redis.publish(
-      `mm:${gameMode.game.name}:${gameMode.name}:enqueue`,
+
+    await redis.hset(
+      `mm:${gameMode.game.id}:${gameMode.id}:queue`,
+      group.id,
       JSON.stringify({
-        uuid: group.id,
         time: DateTime.now().toISO(),
         size: group.size,
         avgElo: rank.avg,
@@ -38,6 +39,7 @@ export default class MatchMakingService {
     await party.related('mode').associate(gameMode)
     await party.save()
     for (const team of teams) {
+      await team.load('members')
       let teamParty = new PartyTeam()
       teamParty.score = '0'
       await teamParty.related('party').associate(party)

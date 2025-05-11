@@ -18,7 +18,9 @@ export default class GroupService {
       size: 1,
     })
 
-    await this.addMember(group, leader)
+    group.related('members').attach([leader.id])
+
+    await group.save()
 
     await GroupCreated.dispatch(leader, group)
 

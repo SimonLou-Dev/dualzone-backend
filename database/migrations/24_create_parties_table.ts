@@ -7,7 +7,7 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.uuid('id').primary().index()
       table.uuid('server_id')
-      table.integer('mode_id').references('id').inTable('game_modes')
+      table.integer('game_mode_id').references('id').inTable('game_modes')
       table.boolean('ended').defaultTo(false)
       table.integer('party_time').defaultTo(null).nullable()
       table.timestamp('created_at')
