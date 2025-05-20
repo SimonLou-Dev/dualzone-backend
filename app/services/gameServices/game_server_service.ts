@@ -78,6 +78,17 @@ export default class GameServerService {
   }
 
   public static async getAvailableServers(): Promise<string> {
+    const allStatuses = await redis.hgetall('gameserver:status')
+
+    const readyServers = Object.entries(allStatuses)
+      .filter(([_, status]) => status === 'ready')
+      .map(([uuid, _]) => uuid)
+
+    if (readyServers.length > 0) {
+      return readyServers[0]
+    }
+
     return 'available_servers'
   }
+
 }

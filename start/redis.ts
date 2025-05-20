@@ -1,7 +1,10 @@
 import redis from '@adonisjs/redis/services/main'
 import GameMode from '#models/game_mode'
 import MatchMakingService from '#services/gameServices/match_making_service'
-import Group from "#models/group";
+import Group from '#models/group'
+import Party from '#models/party'
+import NotifyUser, {NotificationType} from '#events/notify_user'
+import MatchWarmUp from '#events/Match/match_warm_up'
 
 const registerRedisListeners = async () => {
   //Subscribe to Redis channels
@@ -11,8 +14,24 @@ const registerRedisListeners = async () => {
   })
 
   //Listen channel on config validate (player can join the game)
-  redis.psubscribe('gameserver:configValidate', (channel, message) => {
-    console.log(message)
+  redis.psubscribe('gameserver:configValidate', async (channel, message) => {
+    const party = await Party.query().where('ended', false).andWhere('serverId', message).first()
+
+    if (party) {
+      await party.load('teams')
+      const teams = party.teams
+      for (const team of teams) {
+        await team.load('players')
+        for (const player of team.players) {
+          await NotifyUser.dispatch(
+            player,
+            "L'échauffement va commencer. Connectez vous vite !",
+            NotificationType.INFO
+          )
+        }
+      }
+      await MatchWarmUp.dispatch(party)
+    }
   })
 
   //Listen channel to gameserver event

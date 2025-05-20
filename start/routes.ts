@@ -99,5 +99,7 @@ router
 router
   .group(() => {
     router.post('/demo/force_found_match/:modeId', [DemoController, 'force_found_match']) // Force match creation
+    router.post('/demo/force_warmup_start', [DemoController, 'force_warmup_start']) // Force warmup start
+    router.post('/demo/force_resolve_mm/:modeId', [DemoController, 'force_resolve_mm']) // Force warmup start
   })
   .use(middleware.auth())
