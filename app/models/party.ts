@@ -25,6 +25,9 @@ export default class Party extends BaseModel {
   declare ended: boolean
 
   @column()
+  declare status: string
+
+  @column()
   declare partyTime: number | null
 
   @column.dateTime({ autoCreate: true })

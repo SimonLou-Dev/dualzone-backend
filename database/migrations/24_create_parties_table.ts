@@ -8,6 +8,7 @@ export default class extends BaseSchema {
       table.uuid('id').primary().index()
       table.uuid('server_id')
       table.integer('game_mode_id').references('id').inTable('game_modes')
+      table.string('status').defaultTo('CREATING')
       table.boolean('ended').defaultTo(false)
       table.integer('party_time').defaultTo(null).nullable()
       table.timestamp('created_at')

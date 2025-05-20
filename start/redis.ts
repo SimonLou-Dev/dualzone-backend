@@ -3,7 +3,7 @@ import GameMode from '#models/game_mode'
 import MatchMakingService from '#services/gameServices/match_making_service'
 import Group from '#models/group'
 import Party from '#models/party'
-import NotifyUser, {NotificationType} from '#events/notify_user'
+import NotifyUser, { NotificationType } from '#events/notify_user'
 import MatchWarmUp from '#events/Match/match_warm_up'
 
 const registerRedisListeners = async () => {
@@ -15,9 +15,11 @@ const registerRedisListeners = async () => {
 
   //Listen channel on config validate (player can join the game)
   redis.psubscribe('gameserver:configValidate', async (channel, message) => {
-    const party = await Party.query().where('ended', false).andWhere('serverId', message).first()
+    let party = await Party.query().where('ended', false).andWhere('serverId', message).first()
 
     if (party) {
+      party.status = 'WARMUP'
+      await party.save()
       await party.load('teams')
       const teams = party.teams
       for (const team of teams) {
@@ -37,6 +39,12 @@ const registerRedisListeners = async () => {
   //Listen channel to gameserver event
   redis.psubscribe('gameserver:*:event', (channel, message) => {
     console.log(message)
+
+    //TODO : Détecter le SeriesStartEvent (début de la partie)
+
+    //TODO : Détecter le RoundEndEvent (fin de  round donc changer le score de la team)
+
+    //TODO : Détecter le MapResultEvent (fin de la partie donc changer le status de la party)
   })
 
   //Listen channel to matchmaking event
