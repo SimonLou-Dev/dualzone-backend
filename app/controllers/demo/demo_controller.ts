@@ -7,6 +7,9 @@ import { GroupFactory } from '#database/factories/group'
 import PartyTeam from '#models/party_team'
 import RankService from '#services/rank_service'
 import MatchEnded from '#events/Match/match_ended'
+import MatchUpdated from '#events/Match/match_updated'
+import GroupService from "#services/playerManagement/group_service";
+import {UserFactory} from "#database/factories/user";
 
 export default class DemoController {
   async force_found_match({ response, auth, params }: HttpContextContract) {
@@ -21,7 +24,7 @@ export default class DemoController {
 
     if (await redis.hexists(redisKey + 'queue', group.id)) {
       //Creation de la team  adverse
-      const adversaryGroup = await GroupFactory.with('leader').create()
+      const adversaryGroup = await GroupService.createGroup(await UserFactory.create())
 
       await redis.hdel(redisKey + 'queue', group.id)
 
@@ -110,7 +113,6 @@ export default class DemoController {
 
   async force_end_match({ response, auth }: HttpContextContract) {
     const user = auth.getUserOrFail()
-    await user.load('group')
 
     //Check if the user is in a match
     const team: PartyTeam | null = await PartyTeam.query()
@@ -146,6 +148,8 @@ export default class DemoController {
       party.status = 'ENDED'
       party.ended = true
       await party.save()
+      await party.load('mode')
+      await party.mode.load('game')
 
       //Calculer le rank des joueurs
 
@@ -155,12 +159,14 @@ export default class DemoController {
       const team1WinProb: number = await RankService.calculateWinProbabilityOfTeamA(team1, team2)
       const team2WinProb = 1 - team1WinProb
 
+      const totalScore = Number.parseInt(team1.score) + Number.parseInt(team2.score)
+
       for (const player of team1.players) {
         const userRank = await RankService.getUserRank(player, party.mode.game)
         userRank.rank = await RankService.calculateRank(
           player,
           party.mode.game,
-          team1Score,
+          team1Score / totalScore,
           team1WinProb
         )
         await userRank.save()
@@ -168,7 +174,12 @@ export default class DemoController {
 
       for (const player of team2.players) {
         const userRank = await RankService.getUserRank(player, party.mode.game)
-        await RankService.calculateRank(player, party.mode.game, team2Score, team2WinProb)
+        await RankService.calculateRank(
+          player,
+          party.mode.game,
+          team2Score / totalScore,
+          team2WinProb
+        )
         await userRank.save()
       }
 
@@ -179,6 +190,49 @@ export default class DemoController {
       return response.json({
         status: 'ok',
         message: 'Match ended',
+      })
+    } else {
+      return response.json(
+        {
+          status: 'error',
+          message: 'User is not in a match',
+        },
+        500
+      )
+    }
+  }
+
+  async force_update_match_score({ response, auth }: HttpContextContract) {
+    const user = auth.getUserOrFail()
+
+    //Check if the user is in a match
+    const team: PartyTeam | null = await PartyTeam.query()
+      .whereHas('party', (party) => {
+        party.where('ended', false)
+      })
+      .whereHas('players', (q_player) => {
+        q_player.where('users.id', user.id)
+      })
+      .first()
+
+    if (team) {
+      await team.load('party')
+      const party = team.party
+      await party.load('teams')
+      const teams = party.teams
+
+      //Choix d'une équipe au hasard
+      const randomTeam: PartyTeam = teams[Math.floor(Math.random() * teams.length)]
+
+      //Conversion du score de str à number puis ajout de 1
+      randomTeam.score = (Number.parseInt(randomTeam.score) + 1).toString()
+      await randomTeam.save()
+
+      await MatchUpdated.dispatch(party)
+
+      return response.json({
+        status: 'ok',
+        message: 'Match updated',
       })
     } else {
       return response.json(

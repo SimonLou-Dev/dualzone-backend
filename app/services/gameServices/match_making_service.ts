@@ -46,6 +46,23 @@ export default class MatchMakingService {
       await teamParty.related('players').attach(team.members.map((member: User) => member.id))
       await teamParty.save()
     }
+
+    //Calculer les probabilités de victoire
+    await party.load('teams')
+    const team1 = party.teams[0]
+    const team2 = party.teams[1]
+
+    const team1WinProb: number = await RankService.calculateWinProbabilityOfTeamA(team1, team2)
+    const team2WinProb = 1.0 - team1WinProb
+
+    console.log(team1WinProb, team2WinProb)
+
+    team1.winProbability = team1WinProb
+    team2.winProbability = team2WinProb
+
+    await team1.save()
+    await team2.save()
+
     party.serverId = await GameServerService.configureServer(party)
     await party.save()
     await MatchFounded.dispatch(party, ...teams)

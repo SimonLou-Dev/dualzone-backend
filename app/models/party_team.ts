@@ -20,6 +20,9 @@ export default class PartyTeam extends BaseModel {
   @column()
   declare partyId: string
 
+  @column()
+  declare winProbability: number
+
   @belongsTo(() => Party)
   declare party: relations.BelongsTo<typeof Party>
 

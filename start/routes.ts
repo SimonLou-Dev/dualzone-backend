@@ -88,11 +88,13 @@ router
   .group(() => {
     router.post('/match/enqueue/:modeId', [MatchController, 'request']) // Enqueue the group to MM of gamemode
     router.get('/match/party/:partyId', [MatchController, 'get_party']) // Get party info
-    router.get('/match/result/:partyId', [MatchController, 'result']) // Get party info
     router.get('/match/status', [MatchController, 'status']) // Get current user party status
 
     //Get game modes
     router.get('/modes/cs2', [MatchController, 'getGameMode'])
+
+    //Get last parties by game mode
+    router.get('/parties/:modeId', [MatchController, 'listPartiesByGameMode'])
   })
   .use(middleware.auth())
 
@@ -100,6 +102,8 @@ router
   .group(() => {
     router.post('/demo/force_found_match/:modeId', [DemoController, 'force_found_match']) // Force match creation
     router.post('/demo/force_warmup_start', [DemoController, 'force_warmup_start']) // Force warmup start
-    router.post('/demo/force_resolve_mm/:modeId', [DemoController, 'force_resolve_mm']) // Force warmup start
+    router.post('/demo/force_resolve_mm/:modeId', [DemoController, 'force_resolve_mm']) // Resolving all combinations of the game mode in MM queue
+    router.post('/demo/force_end_match', [DemoController, 'force_end_match']) // Force match end and score update
+    router.post('/demo/force_update_match_score', [DemoController, 'force_update_match_score']) // Update match score
   })
   .use(middleware.auth())

@@ -85,8 +85,8 @@ const registerRedisListeners = async () => {
       await team1.load('players')
       await team2.load('players')
 
-      const team1WinProb: number = await RankService.calculateWinProbabilityOfTeamA(team1, team2)
-      const team2WinProb = 1 - team1WinProb
+      const team1WinProb: number = team1.winProbability
+      const team2WinProb = team2.winProbability
 
       for (const player of team1.players) {
         const userRank = await RankService.getUserRank(player, party.mode.game)

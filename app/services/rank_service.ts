@@ -30,16 +30,18 @@ export default class RankService {
     await teamA.party.load('mode')
     await teamA.party.mode.load('game')
     await teamB.load('players')
-    let teamARank = 0
-    let teamBRank = 0
-    teamA.players.map(async (member) => {
+    let teamARank = 1
+    let teamBRank = 1
+
+    for (const member of teamA.players) {
       let rank = await this.getUserRank(member, teamA.party.mode.game)
-      teamARank *= Math.pow(10, rank.rank / 100)
-    })
-    teamB.players.map(async (member) => {
+      teamARank *= Math.pow(10, rank.rank / 1000)
+    }
+
+    for (const member of teamB.players) {
       let rank = await this.getUserRank(member, teamA.party.mode.game)
-      teamBRank *= Math.pow(10, rank.rank / 100)
-    })
+      teamBRank *= Math.pow(10, rank.rank / 1000)
+    }
 
     return teamARank / (teamARank + teamBRank)
   }
@@ -58,9 +60,19 @@ export default class RankService {
     else if (rank.playedGames > 5 && rank.playedGames <= 30) devCoef = 200
     else devCoef = 100
 
-    if (rank.rank >= 3000) devCoef /= 2
+    //Si le rank est plus petit que 2000 qu'il a de grande proba de perdre et qu'il score de fou on le monte un max
+    if (rank.rank <= 2000 && score > 0.5 && winProbability < 0.1) devCoef *= 2
 
-    return this.reduceLostRank(rank, rank.rank + devCoef * (score - winProbability))
+    //Si c'est un GOAT qui doit gagner et qui joue fàce à un caca et il perd, on le détruit
+    else if (rank.rank >= 3000 && score <= 0.5 && winProbability > 0.9) devCoef *= 2
+
+    //Si il a 3000 ou plus et qu'il gagne on nerf le gain
+    else if (rank.rank >= 3000 && score > 0.5) devCoef /= 1.5
+
+    const newRank = rank.rank + devCoef * (score - winProbability)
+    const adjustedRank = this.reduceLostRank(rank, newRank)
+
+    return Math.floor(adjustedRank)
   }
 
   private static reduceLostRank(rank: UserRank, next: number): number {

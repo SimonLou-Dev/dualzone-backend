@@ -68,16 +68,15 @@ export default class MatchController {
 
   async get_party({ response, params }: HttpContextContract) {
     const party = await Party.findOrFail(params.partyId)
+    await party.load('teams', (query) => {
+      query.preload('players')
+    })
 
     return response.json({
       status: 'ok',
       message: 'Party found',
       party: party,
     })
-  }
-
-  async result({ response, auth }: HttpContextContract) {
-    const user = auth.getUserOrFail()
   }
 
   static async checkIfUserIsInAnyQueueOrInMatch(user: User) {
@@ -97,6 +96,33 @@ export default class MatchController {
     const game: Game = await Game.query().where('name', 'cs2').firstOrFail()
     await game.load('gameModes')
     return response.json({ modes: game.gameModes })
+  }
+
+  public async listPartiesByGameMode({ response, auth, params, request }: HttpContextContract) {
+    const user = auth.getUserOrFail()
+    const page: number = request.input('page', 1)
+    const rows: number = request.input('rows', 20)
+
+    const parties: Party[] = await Party.query()
+      .whereHas('mode', (query) => {
+        query.where('game_modes.id', params.modeId)
+      })
+      .whereHas('teams', (query) => {
+        query.whereHas('players', (subq) => {
+          subq.where('users.id', user.id)
+        })
+      })
+      .preload('teams', (teams) => {
+        teams.preload('players')
+      })
+      .orderBy('created_at', 'desc')
+      .paginate(page, rows)
+
+    return response.json({
+      status: 'ok',
+      message: 'Parties found',
+      parties: parties,
+    })
   }
 
   private static async checkIfUserInQueueOrInMatch(
