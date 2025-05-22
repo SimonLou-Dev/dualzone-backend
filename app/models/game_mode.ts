@@ -8,6 +8,12 @@ export default class GameMode extends BaseModel {
   declare id: number
 
   @column()
+  declare name: string
+
+  @column()
+  declare description: string
+
+  @column()
   declare gameId: number
 
   @column.dateTime({ autoCreate: true })

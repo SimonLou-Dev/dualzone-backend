@@ -2,6 +2,7 @@ import { BaseEvent } from '@adonisjs/core/events'
 import Group from '#models/group'
 import User from '#models/user'
 import transmit from '@adonisjs/transmit/services/main'
+import NotifyUser from '#events/notify_user'
 
 export default class GroupCreated extends BaseEvent {
   /**
@@ -17,8 +18,6 @@ export default class GroupCreated extends BaseEvent {
       data: { groupId: group.id },
     })
 
-    transmit.broadcast(`users/${user.id}/notify`, {
-      message: 'Vous avez créé un groupe',
-    })
+    NotifyUser.dispatch(user, 'Vous avez créé un groupe')
   }
 }

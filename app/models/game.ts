@@ -1,5 +1,7 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column } from '@adonisjs/lucid/orm'
+import {BaseModel, column, hasMany} from '@adonisjs/lucid/orm'
+import GameMode from "#models/game_mode";
+import * as relations from "@adonisjs/lucid/types/relations";
 
 export default class Game extends BaseModel {
   @column({ isPrimary: true })
@@ -16,4 +18,7 @@ export default class Game extends BaseModel {
 
   @column()
   declare description: string
+
+  @hasMany(() => GameMode)
+  declare gameModes: relations.HasMany<typeof GameMode>
 }

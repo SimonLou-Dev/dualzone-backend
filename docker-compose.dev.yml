@@ -21,26 +21,6 @@ services:
     command: redis-server --save 20 1 --loglevel warning --requirepass dualzone --loadmodule /opt/redis-stack/lib/rejson.so
     volumes:
       - redis:/data
-  minio:
-    image: docker.io/bitnami/minio:2022
-    ports:
-      - '9000:9000'
-      - '9001:9001'
-    volumes:
-      - minio_data:/data
-    environment:
-      - MINIO_ROOT_USER=dualzone
-      - MINIO_ROOT_PASSWORD=dualzone
-      - MINIO_DEFAULT_BUCKETS=dualzone
-  matchmaker:
-    image: ghcr.io/dualzone/dualmatch:dev
-    restart: always
-    environment:
-        REDIS_HOST: redis
-        REDIS_PORT: 6379
-        REDIS_PASSWORD: dualzone
-        REDIS_DB: 0
-        NODE_ENV: development
   backend:
     image: ghcr.io/dualzone/website-backend:dev
     restart: always
@@ -81,4 +61,3 @@ services:
 volumes:
   redis:
   postgres:
-  minio_data:

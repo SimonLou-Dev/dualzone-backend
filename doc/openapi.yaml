@@ -22,7 +22,7 @@ paths:
   /users:
     get:
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       tags:
         - users
       summary: Returns a list of users.
@@ -48,7 +48,7 @@ paths:
   /users/{id}:
     get:
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       tags:
         - users
       summary: Returns a user by ID.
@@ -81,7 +81,7 @@ paths:
                 $ref: '#/components/schemas/User'
     put:
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       tags:
         - users
       summary: Updates a user by ID.
@@ -121,7 +121,7 @@ paths:
   /auth:
     get:
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       tags:
         - authentication
       summary: Return current user and refreshed token if needed
@@ -199,7 +199,7 @@ paths:
   /tickets/{id}:
     get:
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       tags:
         - tickets
       summary: Returns a ticket by ID.
@@ -232,7 +232,7 @@ paths:
                 $ref: '#/components/schemas/TicketWithAllRelation'
     patch:
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       tags:
         - tickets
       summary: Used to close ticket.
@@ -266,7 +266,7 @@ paths:
   /tickets/{id}/message:
     put:
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       tags:
         - tickets
       summary: Add message to a ticket.
@@ -313,7 +313,7 @@ paths:
   /tickets/{id}/add-member:
     put:
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       tags:
         - tickets
       summary: Add Member to ticket.
@@ -359,7 +359,7 @@ paths:
   /tickets:
     post:
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       tags:
         - tickets
       summary: Create new ticket.
@@ -402,7 +402,7 @@ paths:
                 $ref: '#/components/schemas/TicketWithAllRelation'
     get:
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       tags:
         - tickets
       summary: List all ticket.
@@ -433,7 +433,7 @@ paths:
   /friends:
     post:
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       tags:
         - friends
       summary: Send friend request to user.
@@ -467,7 +467,7 @@ paths:
           $ref: '#/components/responses/friendResponse'
     get:
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       tags:
         - friends
       summary: List all your friends and friend request.
@@ -487,7 +487,7 @@ paths:
   /friends/{id}:
     patch:
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       tags:
         - friends
       summary: Accept friend request.
@@ -517,7 +517,7 @@ paths:
           $ref: '#/components/responses/friendResponse'
     delete:
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       tags:
         - friends
       summary: Delete friend or refuse friend request.
@@ -545,7 +545,607 @@ paths:
           $ref: '#/components/responses/5XX'
         '200':
           $ref: '#/components/responses/friendResponse'
+  /users/{userId}/sanctions:
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - sanctions
+      summary: Returns a list of users sanctions.
+      parameters:
+        - name: id
+          in: path
+          description: ID of user
+          required: true
+          schema:
+            type: string
+          style: simple
+      responses:
+        '401':
+          $ref: '#/components/responses/401'
+        '402':
+          $ref: '#/components/responses/402'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '405':
+          $ref: '#/components/responses/405'
+        '5XX':
+          $ref: '#/components/responses/5XX'
+        '200': # status code
+          description: A JSON array of user sanctions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Sanction'
+  /users/{userId}/sanctions/warn:
+    post:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - sanctions
+      summary: Append warn to user.
+      parameters:
+        - name: id
+          in: path
+          description: ID of user
+          required: true
+          schema:
+            type: string
+          style: simple
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason:
+                  type: string
+                  example: 'Cheating'
+                  minLength: 10
+                  maxLength: 200
+      responses:
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '405':
+          $ref: '#/components/responses/405'
+        '422':
+          $ref: '#/components/responses/422'
+        '5XX':
+          $ref: '#/components/responses/5XX'
+        '200':
+          description: Sanction newley created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sanction'
+  /users/{userId}/sanctions/ban:
+    post:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - sanctions
+      summary: Append ban to user.
+      parameters:
+        - name: id
+          in: path
+          description: ID of user
+          required: true
+          schema:
+            type: string
+          style: simple
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason:
+                  type: string
+                  example: 'Cheating'
+                  minLength: 10
+                  maxLength: 200
+                duration:
+                  type: integer
+                  example: 7
+                  description: 'Duration in days, 0 for permanent ban'
+      responses:
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '405':
+          $ref: '#/components/responses/405'
+        '422':
+          $ref: '#/components/responses/422'
+        '5XX':
+          $ref: '#/components/responses/5XX'
+        '200':
+          description: Sanction newley created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sanction'
 
+  /sanctions/{sanctionId}:
+    put:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - sanctions
+      parameters:
+        - name: id
+          in: path
+          description: ID of sanction
+          required: true
+          schema:
+            type: string
+          style: simple
+      summary: Update sanction
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason:
+                  type: string
+                  example: 'Cheating'
+                  minLength: 10
+                  maxLength: 200
+                duration:
+                  type: integer
+                  example: 7
+                  description: 'Duration in days, 0 for permanent ban'
+      responses:
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '405':
+          $ref: '#/components/responses/405'
+        '422':
+          $ref: '#/components/responses/422'
+        '5XX':
+          $ref: '#/components/responses/5XX'
+        '200':
+          description: Sanction updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sanction'
+    delete:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - sanctions
+      summary: Delete sanction
+      parameters:
+        - name: id
+          in: path
+          description: ID of sanction
+          required: true
+          schema:
+            type: string
+          style: simple
+      responses:
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '405':
+          $ref: '#/components/responses/405'
+        '422':
+          $ref: '#/components/responses/422'
+        '5XX':
+          $ref: '#/components/responses/5XX'
+        '200':
+          description: Sanction deleted
+  /modes/cs2:
+    get:
+      tags:
+        - modes
+      summary: Get all cs2 modes
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '401':
+          $ref: '#/components/responses/401'
+        '402':
+          $ref: '#/components/responses/402'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '405':
+          $ref: '#/components/responses/405'
+        '5XX':
+          $ref: '#/components/responses/5XX'
+        '200':
+          description: A JSON array of cs2 modes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 2
+                    name:
+                      type: string
+                      example: '1v1'
+  /match/enqueue/{modeId}:
+    post:
+      tags:
+        - match
+      summary: Enqueue a match
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - name: modeId
+          in: path
+          description: ID of the mode to enqueue
+          required: true
+          schema:
+            type: integer
+          style: simple
+      responses:
+        '401':
+          $ref: '#/components/responses/401'
+        '402':
+          $ref: '#/components/responses/402'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '405':
+          $ref: '#/components/responses/405'
+        '5XX':
+          $ref: '#/components/responses/5XX'
+        '200':
+          description: Successfully enqueued
+  /parties/{modeId}:
+    get:
+      tags:
+        - match
+      summary: List all parties of user
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - name: modeId
+          in: path
+          description: ID of the mode to enqueue
+          required: true
+          schema:
+            type: integer
+          style: simple
+        - name: page
+          in: query
+          description: Page number for pagination
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: row
+          in: query
+          description: Number of rows per page
+          required: false
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '401':
+          $ref: '#/components/responses/401'
+        '402':
+          $ref: '#/components/responses/402'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '405':
+          $ref: '#/components/responses/405'
+        '5XX':
+          $ref: '#/components/responses/5XX'
+        '200':
+          description: Successfully enqueued
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  meta:
+                    $ref: '#/components/schemas/MetaPagination'
+                  data:
+                    type: array
+                    items:
+                      allOf:
+                        - $ref: '#/components/schemas/Party'
+                        - type: object
+                          properties:
+                            teams:
+                              type: array
+                              items:
+                                allOf:
+                                  - $ref: '#/components/schemas/PartyTeam'
+                                  - type: object
+                                    properties:
+                                      players:
+                                        type: array
+                                        items:
+                                          $ref: '#/components/schemas/User'
+  /rank/{gameId}:
+    get:
+      tags:
+        - classement
+      summary: Get current user position
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - name: modeId
+          in: path
+          description: ID of the game to get rank
+          required: true
+          schema:
+            type: integer
+          style: simple
+      responses:
+        '401':
+          $ref: '#/components/responses/401'
+        '402':
+          $ref: '#/components/responses/402'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '405':
+          $ref: '#/components/responses/405'
+        '5XX':
+          $ref: '#/components/responses/5XX'
+        '200':
+          description: Successfully enqueued
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  elo:
+                    type: string
+                    example: 1500
+                  rank:
+                    type: integer
+                    example: 20
+                    description: 'Current position of the user in the game'
+                  total:
+                    type: integer
+                    example: 100
+                    description: 'Total number of players in the classement'
+  /ranks/{gameId}:
+    get:
+      tags:
+        - classement
+      summary: Get global classement of game
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - name: gameId
+          in: path
+          description: ID of the game
+          required: true
+          schema:
+            type: integer
+          style: simple
+        - name: page
+          in: query
+          description: Page number for pagination
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: row
+          in: query
+          description: Number of rows per page
+          required: false
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '401':
+          $ref: '#/components/responses/401'
+        '402':
+          $ref: '#/components/responses/402'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '405':
+          $ref: '#/components/responses/405'
+        '5XX':
+          $ref: '#/components/responses/5XX'
+        '200':
+          description: Successfully enqueued
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  meta:
+                    $ref: '#/components/schemas/MetaPagination'
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        user:
+                          $ref: '#/components/schemas/User'
+                        elo:
+                          type: string
+                          example: 1500
+                        rank:
+                          type: integer
+                          example: 20
+                          description: 'Current position of the user in the game'
+  /demo/force_found_match/{modeId}:
+    post:
+      tags:
+        - demo
+      summary: Force MM to create match with fake player
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - name: modeId
+          in: path
+          description: ID of the mode to enqueue
+          required: true
+          schema:
+            type: integer
+          style: simple
+      description:
+        This route is used to force the matchmaker to create a match with fake players
+        This is used for testing purpose only
+        This route is not available in production
+        The player muste be in queue (/match/enqueue/{modeId})
+      responses:
+        '401':
+          $ref: '#/components/responses/401'
+        '402':
+          $ref: '#/components/responses/402'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '405':
+          $ref: '#/components/responses/405'
+        '5XX':
+          $ref: '#/components/responses/5XX'
+        '200':
+          description: Successfully enqueued
+  /demo/force_resolve_mm/{modeId}:
+    post:
+      tags:
+        - demo
+      summary: Force MM to resolve all duo
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - name: modeId
+          in: path
+          description: ID of the mode
+          required: true
+          schema:
+            type: integer
+          style: simple
+      description:
+        This route is used to force the matchmaker to create pairs of players
+        (If there is odd number in queue, it will keep the last player in queue)
+        This is used for testing purpose only
+        This route is not available in production
+        The player muste be in queue (/match/enqueue/{modeId})
+      responses:
+        '401':
+          $ref: '#/components/responses/401'
+        '402':
+          $ref: '#/components/responses/402'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '405':
+          $ref: '#/components/responses/405'
+        '5XX':
+          $ref: '#/components/responses/5XX'
+        '200':
+          description: Successfully enqueued
+  /demo/force_end_match:
+    post:
+      tags:
+        - demo
+      summary: Force to end match
+      security:
+        - bearerAuth: [ ]
+      description:
+        This route end (current player) match, set random score and update elo
+        This is used for testing purpose only
+        This route is not available in production
+        The player must be in match
+      responses:
+        '401':
+          $ref: '#/components/responses/401'
+        '402':
+          $ref: '#/components/responses/402'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '405':
+          $ref: '#/components/responses/405'
+        '5XX':
+          $ref: '#/components/responses/5XX'
+        '200':
+          description: Successfully enqueued
+  /demo/force_warmup_start:
+    post:
+      tags:
+        - demo
+      summary: Force MM to start match
+      security:
+        - bearerAuth: [ ]
+      description:
+        This route "force" (current player) server to create and start a warmup (any server behind)
+        This is used for testing purpose only
+        This route is not available in production
+        The player must be in queue (/match/enqueue/{modeId})
+      responses:
+        '401':
+          $ref: '#/components/responses/401'
+        '402':
+          $ref: '#/components/responses/402'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '405':
+          $ref: '#/components/responses/405'
+        '5XX':
+          $ref: '#/components/responses/5XX'
+        '200':
+          description: Successfully enqueued
+  /demo/force_update_match_score:
+    post:
+      tags:
+        - demo
+      summary: Force MM to start match
+      security:
+        - bearerAuth: [ ]
+      description:
+        This route will update (current player match) score randomly
+        This is used for testing purpose only
+        This route is not available in production
+        The player must be in queue (/match/enqueue/{modeId})
+      responses:
+        '401':
+          $ref: '#/components/responses/401'
+        '402':
+          $ref: '#/components/responses/402'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '405':
+          $ref: '#/components/responses/405'
+        '5XX':
+          $ref: '#/components/responses/5XX'
+        '200':
+          description: Successfully enqueued
 components:
   responses:
     '401':
@@ -632,6 +1232,70 @@ components:
       type: array
       items:
         $ref: '#/components/schemas/User'
+    Sanction:
+      properties:
+        id:
+          type: integer
+          example: 1
+        type:
+          type: number
+          enum: 0, 1
+          description: '0: Warning, 1: Ban'
+        reason:
+            type: string
+            example: 'Cheating'
+        duration:
+            type: integer
+            example: 7
+            description: 'Duration in days'
+        admin:
+          $ref: '#/components/schemas/User'
+        user:
+          $ref: '#/components/schemas/User'
+    Party:
+      properties:
+        id:
+          type: string
+          example: "bcaa40fa-32fd-447b-9f6f-0eac1786e239"
+        modeId:
+          type: integer
+          example: 1
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        partyTime:
+          type: string
+          format: date-time
+        ended:
+          type: boolean
+          example: false
+        status:
+          type: string
+          enum: 'ENDED, WARMUP, PLAYING, WAITING'
+          example: 'WAITING'
+    PartyTeam:
+        properties:
+            id:
+              type: string
+              example: "bcaa40fa-32fd-447b-9f6f-0eac1786e239"
+            partyId:
+              type: string
+              example: "bcaa40fa-32fd-447b-9f6f-0eac1786e239"
+            score:
+              type: integer
+              example: 0
+            winProbability:
+              type: number
+              example: 0.5
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
     Permission:
       example: 'user:read'
     Permissions:
@@ -689,3 +1353,30 @@ components:
                     properties:
                       sender:
                         $ref: '#/components/schemas/User'
+    MetaPagination:
+        type: object
+        properties:
+          total:
+            type: integer
+            example: 100
+          perPage:
+            type: integer
+            example: 10
+          currentPage:
+            type: integer
+            example: 1
+          lastPage:
+            type: integer
+            example: 10
+          firstPageUrl:
+            type: string
+            example: 'http://localhost:3333/api/v1/tickets?page=1'
+          lastPageUrl:
+            type: string
+            example: 'http://localhost:3333/api/v1/tickets?page=10'
+          nextPageUrl:
+            type: string
+            example: 'http://localhost:3333/api/v1/tickets?page=2'
+          prevPageUrl:
+            type: string
+            example: 'http://localhost:3333/api/v1/tickets?page=0'

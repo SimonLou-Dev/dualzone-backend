@@ -38,6 +38,14 @@ router.use([
   () => import('#middleware/initialize_bouncer_middleware'),
 ])
 
+/*
+Register redis listeners
+ */
+
+import registerRedisListeners from './redis.ts'
+
+registerRedisListeners()
+
 /**
  * Named middleware collection must be explicitly assigned to
  * the routes or the routes group.
@@ -45,3 +53,5 @@ router.use([
 export const middleware = router.named({
   auth: () => import('#middleware/auth_middleware'),
 })
+
+
