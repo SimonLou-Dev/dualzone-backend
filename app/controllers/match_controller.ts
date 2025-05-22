@@ -17,10 +17,28 @@ export default class MatchController {
     const inQueue = await MatchController.checkIfUserIsInAnyQueueOrInMatch(user)
     await user.load('group')
 
-    if (!inQueue) {
+    const team: PartyTeam | null = await PartyTeam.query()
+      .whereHas('players', (playersQ) => {
+        playersQ.where('users.id', user.id)
+      })
+      .whereHas('party', (partyQ) => {
+        partyQ.where('ended', false)
+      })
+      .first()
+
+    if (team) {
+      await team.load('party')
+      await team.party.load('mode')
       return response.json({
         status: 'ok',
-        message: 'User is in queue or match',
+        message: 'User is in match',
+        party: team.party,
+        mode: team.party.mode,
+      })
+    } else if (inQueue) {
+      return response.json({
+        status: 'ok',
+        message: 'User is in queue',
       })
     } else {
       return response.json({
@@ -67,16 +85,35 @@ export default class MatchController {
   }
 
   async get_party({ response, params }: HttpContextContract) {
+    const user = await User.findOrFail(params.userId)
     const party = await Party.findOrFail(params.partyId)
+
     await party.load('teams', (query) => {
       query.preload('players')
     })
 
-    return response.json({
-      status: 'ok',
-      message: 'Party found',
-      party: party,
-    })
+    //Check if user is in party and return party
+
+    for (const team of party.teams) {
+      if (team.players.some((player) => player.id === user.id)) {
+        await party.load('mode')
+        return response.json({
+          status: 'ok',
+          message: 'Party found',
+          party: party,
+        })
+      }
+    }
+
+    //Else return 403 not authorized
+
+    return response.json(
+      {
+        status: 'error',
+        message: 'User is not in party',
+      },
+      403
+    )
   }
 
   static async checkIfUserIsInAnyQueueOrInMatch(user: User) {

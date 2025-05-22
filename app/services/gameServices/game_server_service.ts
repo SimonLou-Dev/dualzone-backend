@@ -88,7 +88,7 @@ export default class GameServerService {
       return readyServers[0]
     }
 
-    return 'available_servers'
+    return 'aaaaaaaa-0000-0000-0000-aaaaaaaaaaaa'
   }
 
 }

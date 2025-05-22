@@ -883,8 +883,117 @@ paths:
                                         type: array
                                         items:
                                           $ref: '#/components/schemas/User'
-
-
+  /rank/{gameId}:
+    get:
+      tags:
+        - classement
+      summary: Get current user position
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - name: modeId
+          in: path
+          description: ID of the game to get rank
+          required: true
+          schema:
+            type: integer
+          style: simple
+      responses:
+        '401':
+          $ref: '#/components/responses/401'
+        '402':
+          $ref: '#/components/responses/402'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '405':
+          $ref: '#/components/responses/405'
+        '5XX':
+          $ref: '#/components/responses/5XX'
+        '200':
+          description: Successfully enqueued
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  elo:
+                    type: string
+                    example: 1500
+                  rank:
+                    type: integer
+                    example: 20
+                    description: 'Current position of the user in the game'
+                  total:
+                    type: integer
+                    example: 100
+                    description: 'Total number of players in the classement'
+  /ranks/{gameId}:
+    get:
+      tags:
+        - classement
+      summary: Get global classement of game
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - name: gameId
+          in: path
+          description: ID of the game
+          required: true
+          schema:
+            type: integer
+          style: simple
+        - name: page
+          in: query
+          description: Page number for pagination
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: row
+          in: query
+          description: Number of rows per page
+          required: false
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '401':
+          $ref: '#/components/responses/401'
+        '402':
+          $ref: '#/components/responses/402'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '405':
+          $ref: '#/components/responses/405'
+        '5XX':
+          $ref: '#/components/responses/5XX'
+        '200':
+          description: Successfully enqueued
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  meta:
+                    $ref: '#/components/schemas/MetaPagination'
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        user:
+                          $ref: '#/components/schemas/User'
+                        elo:
+                          type: string
+                          example: 1500
+                        rank:
+                          type: integer
+                          example: 20
+                          description: 'Current position of the user in the game'
   /demo/force_found_match/{modeId}:
     post:
       tags:

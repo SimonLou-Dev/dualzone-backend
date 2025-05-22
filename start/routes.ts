@@ -17,6 +17,8 @@ const UserAuthController = () => import('#controllers/User/user_auth_controller'
 const UserResourceController = () => import('#controllers/User/user_resource_controller')
 const UserSanctionController = () => import('#controllers/User/user_sanction_controller')
 const DemoController = () => import('#controllers/demo/demo_controller')
+const UserRankController = () => import('#controllers/User/user_rank_controller')
+
 
 router.get('/', async () => {
   return {
@@ -95,6 +97,10 @@ router
 
     //Get last parties by game mode
     router.get('/parties/:modeId', [MatchController, 'listPartiesByGameMode'])
+
+    //Get classement
+    router.get('/ranks/:gameId', [UserRankController, 'getClassement'])
+    router.get('/rank/:gameId', [UserRankController, 'ownRank'])
   })
   .use(middleware.auth())
 
