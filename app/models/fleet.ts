@@ -1,9 +1,7 @@
 import { DateTime } from 'luxon'
-import { BaseModel, belongsTo, column, hasMany, hasManyThrough } from '@adonisjs/lucid/orm'
+import { BaseModel, belongsTo, column} from '@adonisjs/lucid/orm'
 import Game from '#models/game'
 import * as relations from '@adonisjs/lucid/types/relations'
-import GameServer from '#models/game_server'
-import Party from '#models/party'
 
 export default class Fleet extends BaseModel {
   @column({ isPrimary: true })
@@ -47,10 +45,4 @@ export default class Fleet extends BaseModel {
 
   @belongsTo(() => Game)
   declare game: relations.BelongsTo<typeof Game>
-
-  @hasMany(() => GameServer)
-  declare servers: relations.HasMany<typeof GameServer>
-
-  @hasManyThrough([() => GameServer, () => Party])
-  declare parties: relations.HasManyThrough<typeof GameServer>
 }

@@ -8,7 +8,7 @@ import {
   updateSanctionValidator,
 } from '#validators/sanction'
 import Sanction from '#models/sanction'
-import SanctionPolicy from "#policies/sanction_policy";
+import SanctionPolicy from '#policies/sanction_policy'
 
 export default class UserSanctionController {
   async listSanction({ bouncer, response, params, auth }: HttpContextContract) {

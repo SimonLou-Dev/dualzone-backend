@@ -3,13 +3,12 @@ import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import GameMode from '#models/game_mode'
 import redis from '@adonisjs/redis/services/main'
 import Group from '#models/group'
-import { GroupFactory } from '#database/factories/group'
 import PartyTeam from '#models/party_team'
 import RankService from '#services/rank_service'
 import MatchEnded from '#events/Match/match_ended'
 import MatchUpdated from '#events/Match/match_updated'
-import GroupService from "#services/playerManagement/group_service";
-import {UserFactory} from "#database/factories/user";
+import GroupService from '#services/playerManagement/group_service'
+import { UserFactory } from '#database/factories/user'
 
 export default class DemoController {
   async force_found_match({ response, auth, params }: HttpContextContract) {

@@ -90,5 +90,4 @@ export default class GameServerService {
 
     return 'aaaaaaaa-0000-0000-0000-aaaaaaaaaaaa'
   }
-
 }

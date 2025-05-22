@@ -10,6 +10,7 @@
 
 import router from '@adonisjs/core/services/router'
 import server from '@adonisjs/core/services/server'
+import registerRedisListeners from '#start/redis'
 
 /**
  * The error handler is used to convert an exception
@@ -42,8 +43,6 @@ router.use([
 Register redis listeners
  */
 
-import registerRedisListeners from './redis.ts'
-
 registerRedisListeners()
 
 /**
@@ -53,5 +52,3 @@ registerRedisListeners()
 export const middleware = router.named({
   auth: () => import('#middleware/auth_middleware'),
 })
-
-

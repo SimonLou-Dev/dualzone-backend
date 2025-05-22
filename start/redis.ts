@@ -14,7 +14,7 @@ const registerRedisListeners = async () => {
   //Subscribe to Redis channels
   //Listen channel on config error
   redis.psubscribe('gameserver:configError', (channel, message) => {
-    console.log(message)
+    console.log(message, channel)
   })
 
   //Listen channel on config validate (player can join the game)
@@ -22,6 +22,7 @@ const registerRedisListeners = async () => {
     let party = await Party.query().where('ended', false).andWhere('serverId', message).first()
 
     if (party) {
+      channel = channel.split(':')[1]
       party.status = 'WARMUP'
       await party.save()
       await notifyUserInParty(party, "L'échauffement va commencer. Connectez vous vite !")

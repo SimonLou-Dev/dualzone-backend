@@ -62,10 +62,8 @@ export default class RankService {
 
     //Si le rank est plus petit que 2000 qu'il a de grande proba de perdre et qu'il score de fou on le monte un max
     if (rank.rank <= 2000 && score > 0.5 && winProbability < 0.1) devCoef *= 2
-
     //Si c'est un GOAT qui doit gagner et qui joue fàce à un caca et il perd, on le détruit
     else if (rank.rank >= 3000 && score <= 0.5 && winProbability > 0.9) devCoef *= 2
-
     //Si il a 3000 ou plus et qu'il gagne on nerf le gain
     else if (rank.rank >= 3000 && score > 0.5) devCoef /= 1.5
 

@@ -1,6 +1,6 @@
 import factory from '@adonisjs/lucid/factories'
 import Sanction from '#models/sanction'
-import {UserFactory} from "#database/factories/user";
+import { UserFactory } from '#database/factories/user'
 
 export const SanctionFactory = factory
   .define(Sanction, async ({ faker }) => {

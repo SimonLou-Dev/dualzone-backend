@@ -1,4 +1,3 @@
-
 import User from '#models/user'
 import { SanctionFactory } from '#database/factories/sanction_factory'
 import factory from '@adonisjs/lucid/factories'

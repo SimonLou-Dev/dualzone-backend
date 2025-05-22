@@ -19,7 +19,6 @@ const UserSanctionController = () => import('#controllers/User/user_sanction_con
 const DemoController = () => import('#controllers/demo/demo_controller')
 const UserRankController = () => import('#controllers/User/user_rank_controller')
 
-
 router.get('/', async () => {
   return {
     hello: 'world',
