@@ -46,7 +46,9 @@ export default class UserAuthController {
       }
 
       const token = await User.accessTokens.create(findedUser)
-      return env.get('FRONT_APP_URL') + '?token=' + token.value!.release()
+      const url = env.get('FRONT_APP_URL') + '?token=' + token.value!.release()
+
+      return context.response.redirect().toPath(url)
     } catch (e: any) {
       dd(e)
     }
