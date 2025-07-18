@@ -50,6 +50,12 @@ export default class MatchController {
 
   async request({ response, auth, params }: HttpContextContract) {
     const user = auth.getUserOrFail()
+
+    await user.load('group')
+    let group: Group
+    if (user.group.length === 0) group = await GroupService.createGroup(user)
+    else group = user.group[0]
+
     const inQueue = await MatchController.checkIfUserIsInAnyQueueOrInMatch(user)
 
     if (inQueue) {
@@ -68,10 +74,7 @@ export default class MatchController {
       )
     }
 
-    await user.load('group')
-    let group: Group
-    if (user.group.length === 0) group = await GroupService.createGroup(user)
-    else group = user.group[0]
+    
 
     const modeId = params.modeId
     const gameMode: GameMode = await GameMode.findOrFail(modeId)
