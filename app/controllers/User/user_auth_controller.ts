@@ -85,4 +85,11 @@ export default class UserAuthController {
 
     return null
   }
+
+  async currentGroup({ response, auth }: HttpContextContract) {
+    const user: User = auth.getUserOrFail()
+    await user.load('group')
+    return user.group ? response.json(user.group) : response.notFound({ message: 'Group not found' })
+  }
+
 }

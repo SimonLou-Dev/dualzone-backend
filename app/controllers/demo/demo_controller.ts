@@ -7,6 +7,8 @@ import PartyTeam from '#models/party_team'
 import RankService from '#services/rank_service'
 import MatchEnded from '#events/Match/match_ended'
 import MatchUpdated from '#events/Match/match_updated'
+import MatchChossing from '#events/Match/match_choosing'
+import MatchStated from '#events/Match/match_started'
 import GroupService from '#services/playerManagement/group_service'
 import { UserFactory } from '#database/factories/user'
 
@@ -110,7 +112,7 @@ export default class DemoController {
     })
   }
 
-  async force_end_match({ response, auth }: HttpContextContract) {
+  async generate_random_rslt({ response, auth }: HttpContextContract) {
     const user = auth.getUserOrFail()
 
     //Check if the user is in a match
@@ -227,6 +229,12 @@ export default class DemoController {
       randomTeam.score = (Number.parseInt(randomTeam.score) + 1).toString()
       await randomTeam.save()
 
+      party.load('teams')
+
+      party.teams.forEach((team) => {
+        team.load('players')
+      })
+
       await MatchUpdated.dispatch(party)
 
       return response.json({
@@ -243,4 +251,189 @@ export default class DemoController {
       )
     }
   }
+
+  async force_match_choice({ response, auth }: HttpContextContract) {
+    const user = auth.getUserOrFail()
+
+    //Check if the user is in a match
+    const team: PartyTeam | null = await PartyTeam.query()
+      .whereHas('party', (party) => {
+        party.where('ended', false)
+      })
+      .whereHas('players', (q_player) => {
+        q_player.where('users.id', user.id)
+      })
+      .first()
+
+    if (team) {
+      await team.load('party')
+      const party = team.party
+      await party.load('teams')
+      const teams = party.teams
+
+      party.status = 'CHOOSING'
+      await party.save()
+
+      party.load('teams')
+
+      party.teams.forEach((team) => {
+        team.load('players')
+      })
+
+      await MatchChossing.dispatch(party)
+
+      return response.json({
+        status: 'ok',
+        message: 'Match updated',
+      })
+    } else {
+      return response.json(
+        {
+          status: 'error',
+          message: 'User is not in a match',
+        },
+        500
+      )
+    }
+
+  }
+
+  async force_match_play({ response, auth }: HttpContextContract) {
+    const user = auth.getUserOrFail()
+
+    //Check if the user is in a match
+    const team: PartyTeam | null = await PartyTeam.query()
+      .whereHas('party', (party) => {
+        party.where('ended', false)
+      })
+      .whereHas('players', (q_player) => {
+        q_player.where('users.id', user.id)
+      })
+      .first()
+
+    if (team) {
+      await team.load('party')
+      const party = team.party
+      await party.load('teams')
+      const teams = party.teams
+
+      party.status = 'PLAYING'
+      await party.save()
+
+      party.load('teams')
+
+      party.teams.forEach((team) => {
+        team.load('players')
+      })
+
+      await MatchChossing.dispatch(party)
+
+      return response.json({
+        status: 'ok',
+        message: 'Match updated',
+      })
+    } else {
+      return response.json(
+        {
+          status: 'error',
+          message: 'User is not in a match',
+        },
+        500
+      )
+    }
+
+  }
+
+  async force_end_match({ response, auth }: HttpContextContract) {
+    const user = auth.getUserOrFail()
+
+    //Check if the user is in a match
+    const team: PartyTeam | null = await PartyTeam.query()
+      .whereHas('party', (party) => {
+        party.where('ended', false)
+      })
+      .whereHas('players', (q_player) => {
+        q_player.where('users.id', user.id)
+      })
+      .first()
+
+    if (team) {
+      await team.load('party')
+      const party = team.party
+      await party.load('teams')
+      const teams = party.teams
+      let team1 = teams[0]
+      let team2 = teams[1]
+
+      //Génération des scores aléatoires avec un score max de 13
+      const team1Score = team1.score === '0' ? 0 : Math.floor(Math.random() * 13)
+      const team2Score = team2.score === '0' ? 0 : Math.floor(Math.random() * 13)
+
+      //Assigner les scores aux équipes
+      team1.score = team1Score.toString()
+      team2.score = team2Score.toString()
+
+      //Sauvegarder les équipes
+      await team1.save()
+      await team2.save()
+
+      //Finir la partie
+      party.status = 'ENDED'
+      party.ended = true
+      await party.save()
+      await party.load('mode')
+      await party.mode.load('game')
+
+      //Calculer le rank des joueurs
+
+      await team1.load('players')
+      await team2.load('players')
+
+      const team1WinProb: number = await RankService.calculateWinProbabilityOfTeamA(team1, team2)
+      const team2WinProb = 1 - team1WinProb
+
+      const totalScore = Number.parseInt(team1.score) + Number.parseInt(team2.score)
+
+      for (const player of team1.players) {
+        const userRank = await RankService.getUserRank(player, party.mode.game)
+        userRank.rank = await RankService.calculateRank(
+          player,
+          party.mode.game,
+          team1Score / totalScore,
+          team1WinProb
+        )
+        await userRank.save()
+      }
+
+      for (const player of team2.players) {
+        const userRank = await RankService.getUserRank(player, party.mode.game)
+        await RankService.calculateRank(
+          player,
+          party.mode.game,
+          team2Score / totalScore,
+          team2WinProb
+        )
+        await userRank.save()
+      }
+
+      // Dispatch the event to notify the end of the match
+
+      await MatchEnded.dispatch(party)
+
+      return response.json({
+        status: 'ok',
+        message: 'Match ended',
+      })
+    } else {
+      return response.json(
+        {
+          status: 'error',
+          message: 'User is not in a match',
+        },
+        500
+      )
+    }
+  }
+
+
 }

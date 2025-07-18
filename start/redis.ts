@@ -9,6 +9,8 @@ import { BaseEvent, RoundEndEvent } from '../utils/game_events.js'
 import MatchUpdated from '#events/Match/match_updated'
 import MatchEnded from '#events/Match/match_ended'
 import RankService from '#services/rank_service'
+import MatchStated from '#events/Match/match_started'
+import MatchChossing from '#events/Match/match_choosing'
 
 const registerRedisListeners = async () => {
   //Subscribe to Redis channels
@@ -39,12 +41,32 @@ const registerRedisListeners = async () => {
     let party = await Party.query().where('ended', false).andWhere('serverId', serverId).first()
 
     //Détecter le SeriesStartEvent (début de la partie)
+    if (eventName === 'series_start' && party) {
+      party.status = 'CHOOSING'
+      await party.save()
+      await notifyUserInParty(party, 'La partie commence !')
+
+      party.load('teams')
+
+      party.teams.forEach((team) => {
+        team.load('players')
+      })
+
+      await MatchChossing.dispatch(party)
+    }
+
     if (eventName === 'going_live' && party) {
       party.status = 'PLAYING'
       await party.save()
       await notifyUserInParty(party, 'La partie commence !')
 
-      await MatchUpdated.dispatch(party)
+      party.load('teams')
+
+      party.teams.forEach((team) => {
+        team.load('players')
+      })
+
+      await MatchStated.dispatch(party)
     }
 
     //Détecter le RoundEndEvent (fin de  round donc changer le score de la team)
@@ -62,6 +84,12 @@ const registerRedisListeners = async () => {
 
       await team1.save()
       await team2.save()
+
+      party.load('teams')
+
+      party.teams.forEach((team) => {
+        team.load('players')
+      })
 
       await MatchUpdated.dispatch(party)
     }

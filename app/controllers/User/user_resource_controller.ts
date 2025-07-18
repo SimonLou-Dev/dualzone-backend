@@ -30,4 +30,6 @@ export default class UserResourceController {
     await user.delete()
     return response.json(user)
   }
+
+
 }

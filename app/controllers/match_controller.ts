@@ -84,8 +84,8 @@ export default class MatchController {
     })
   }
 
-  async get_party({ response, params }: HttpContextContract) {
-    const user = await User.findOrFail(params.userId)
+  async get_party({ response, params, auth }: HttpContextContract) {
+    const user = await auth.getUserOrFail()
     const party = await Party.findOrFail(params.partyId)
 
     await party.load('teams', (query) => {

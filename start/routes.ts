@@ -28,7 +28,9 @@ router.get('/', async () => {
 transmit.registerRoutes((route) => {
   //Ensure you are authenticated before accessing the route
   if (route.getPattern() === '__transmit/subscribe') {
-    route.use(middleware.auth())
+    route.use(middleware.auth({
+      guards: ['api'],
+    }))
     return
   }
 })
@@ -48,6 +50,8 @@ router
     router.get('/users/:id', [UserResourceController, 'show'])
     router.delete('/users/', [UserResourceController, 'destroy'])
     router.put('/users/:id', [UserResourceController, 'update'])
+
+    router.get('/user/groups', [UserAuthController, 'currentGroup'])
   })
   .use(middleware.auth())
 
@@ -105,10 +109,17 @@ router
 
 router
   .group(() => {
-    router.post('/demo/force_found_match/:modeId', [DemoController, 'force_found_match']) // Force match creation
-    router.post('/demo/force_warmup_start', [DemoController, 'force_warmup_start']) // Force warmup start
-    router.post('/demo/force_resolve_mm/:modeId', [DemoController, 'force_resolve_mm']) // Resolving all combinations of the game mode in MM queue
-    router.post('/demo/force_end_match', [DemoController, 'force_end_match']) // Force match end and score update
-    router.post('/demo/force_update_match_score', [DemoController, 'force_update_match_score']) // Update match score
+    router.post('/demo/matchmaking/randomplayer/:modeId', [DemoController, 'force_found_match']) // Force match creation
+    router.post('/demo/matchmaking/resolveduo/:modeId', [DemoController, 'force_resolve_mm']) // Resolving all combinations of the game mode in MM queue
+
+    router.post('/demo/random_result', [DemoController, 'generate_random_rslt']) // Force match end and score update
+
+
+    router.post('/demo/force/score', [DemoController, 'force_update_match_score']) // Update match score
+
+    router.post('/demo/force/status/choose', [DemoController, 'force_match_choice']) // Force status choose
+    router.post('/demo/force/status/warmup', [DemoController, 'force_warmup_start']) // Force warmup start
+    router.post('/demo/force/status/play', [DemoController, 'force_match_play']) // Force warmup start
+    router.post('/demo/force/status/end', [DemoController, 'force_end_match']) // Force warmup start
   })
   .use(middleware.auth())
