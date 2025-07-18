@@ -12,7 +12,6 @@ import { AccessToken } from '@adonisjs/auth/access_tokens'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import PermissionService from '#services/playerManagement/permission_service'
 import GroupService from '#services/playerManagement/group_service'
-import Group from '#models/group'
 
 export default class UserAuthController {
   private steamAuthService: SteamAuthService
@@ -51,9 +50,7 @@ export default class UserAuthController {
       const url = env.get('FRONT_APP_URL') + '?token=' + token.value!.release()
 
       await findedUser.load('group')
-      let group: Group
-      if (findedUser.group.length === 0) group = await GroupService.createGroup(findedUser)
-      else group = findedUser.group[0]
+      if (findedUser.group.length === 0) await GroupService.createGroup(findedUser)
 
       return context.response.redirect().toPath(url)
     } catch (e: any) {
