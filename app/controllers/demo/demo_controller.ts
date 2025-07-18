@@ -8,7 +8,6 @@ import RankService from '#services/rank_service'
 import MatchEnded from '#events/Match/match_ended'
 import MatchUpdated from '#events/Match/match_updated'
 import MatchChossing from '#events/Match/match_choosing'
-import MatchStated from '#events/Match/match_started'
 import GroupService from '#services/playerManagement/group_service'
 import { UserFactory } from '#database/factories/user'
 
@@ -269,7 +268,6 @@ export default class DemoController {
       await team.load('party')
       const party = team.party
       await party.load('teams')
-      const teams = party.teams
 
       party.status = 'CHOOSING'
       await party.save()
@@ -315,7 +313,7 @@ export default class DemoController {
       await team.load('party')
       const party = team.party
       await party.load('teams')
-      const teams = party.teams
+
 
       party.status = 'PLAYING'
       await party.save()
