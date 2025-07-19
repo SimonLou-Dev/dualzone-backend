@@ -89,7 +89,7 @@ const registerRedisListeners = async () => {
     }
 
     //Détecter le MapResultEvent (fin de la partie donc changer le status de la party)
-    if (eventName === 'round_end' && party) {
+    if (eventName === 'map_result' && party) {
       const payload: RoundEndEvent = JSON.parse(message)
 
       //Finir la partie
