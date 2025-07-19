@@ -179,7 +179,7 @@ export default class DemoController {
 
       for (const player of team2.players) {
         const userRank = await RankService.getUserRank(player, party.mode.game)
-        await RankService.calculateRank(
+        userRank.rank = await RankService.calculateRank(
           player,
           party.mode.game,
           team2Score / totalScore,

@@ -124,7 +124,7 @@ const registerRedisListeners = async () => {
 
       for (const player of team2.players) {
         const userRank = await RankService.getUserRank(player, party.mode.game)
-        await RankService.calculateRank(player, party.mode.game, payload.team2.score, team2WinProb)
+        userRank.rank = await RankService.calculateRank(player, party.mode.game, payload.team2.score, team2WinProb)
         await userRank.save()
       }
 
