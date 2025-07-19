@@ -103,7 +103,7 @@ export default class DemoController {
 
       // Publication des équipes avec seulement les IDs des joueurs
       await redis.publish(
-        redisKey + 'mm',
+        redisKey + 'found',
         JSON.stringify({
           teams: [playerId1, playerId2],
         })
