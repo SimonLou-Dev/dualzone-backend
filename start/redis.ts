@@ -40,17 +40,20 @@ const registerRedisListeners = async () => {
     const serverId = channel.split(':')[1]
     let party = await Party.query().where('ended', false).andWhere('serverId', serverId).first()
 
+    if(!party) return console.log(`No party found for serverId ${serverId}`)
+
+    await party.load('teams')
+
+    await party.teams.forEach((team) => {
+      team.load('players')
+    })
+
+
     //Détecter le SeriesStartEvent (début de la partie)
     if (eventName === 'series_start' && party) {
       party.status = 'CHOOSING'
       await party.save()
       await notifyUserInParty(party, 'La partie commence !')
-
-      party.load('teams')
-
-      party.teams.forEach((team) => {
-        team.load('players')
-      })
 
       await MatchChossing.dispatch(party)
     }
@@ -59,12 +62,6 @@ const registerRedisListeners = async () => {
       party.status = 'PLAYING'
       await party.save()
       await notifyUserInParty(party, 'La partie commence !')
-
-      party.load('teams')
-
-      party.teams.forEach((team) => {
-        team.load('players')
-      })
 
       await MatchStated.dispatch(party)
     }
@@ -87,12 +84,6 @@ const registerRedisListeners = async () => {
 
       await team1.save()
       await team2.save()
-
-      party.load('teams')
-
-      party.teams.forEach((team) => {
-        team.load('players')
-      })
 
       await MatchUpdated.dispatch(party)
     }
