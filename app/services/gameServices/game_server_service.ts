@@ -5,11 +5,6 @@ const maps = [
   'de_dust2',
   'de_inferno',
   'de_nuke',
-  'de_mirage',
-  'de_overpass',
-  'de_train',
-  'de_ancient',
-  'de_vertigo',
 ]
 
 export default class GameServerService {
@@ -45,10 +40,10 @@ export default class GameServerService {
     await redis.hset(gameConfigKey, {
       id: Math.floor(Math.random() * 100 + 1).toString(),
       title: 'test',
-      num_maps: Math.floor(Math.random() * maps.length),
+      num_maps: 1,
       players_per_team: 1,
       min_players_to_ready: 1,
-      clinch_series: 2,
+      clinch_series: "true",
       skip_veto: 'false',
       veto_first: 'random',
       side_type: 'always_knife',
@@ -70,7 +65,11 @@ export default class GameServerService {
       await redis.lpush(mapsKey, map.toLowerCase())
     }
 
-    await redis.hset(gameVarsKey, 'matchzy_kick_when_no_match_loaded', 'true')
+    await redis.hset(gameVarsKey, {
+      matchzy_kick_when_no_match_loaded: 'true',
+      mp_maxrounds: 2,
+      mp_win_condition: 2
+    })
 
     await redis.publish('gameserver:allocate', uuid)
 

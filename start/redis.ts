@@ -73,6 +73,9 @@ const registerRedisListeners = async () => {
     if (eventName === 'round_end' && party) {
       const payload: RoundEndEvent = JSON.parse(message)
 
+      console.log(payload)
+      console.log(party)
+
       //Mettre à jour le score de la team
       let team1 = party.teams[0]
       let team2 = party.teams[1]
