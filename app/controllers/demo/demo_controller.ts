@@ -91,16 +91,21 @@ export default class DemoController {
     const redisKey = `mm:${gameMode.game.id}:${gameMode.id}:`
 
     const waiter = await redis.hgetall(redisKey + 'queue')
+    const keys = Object.keys(waiter)
 
-    //Need to assemble match and set one player per teams
-    for (let i = 0; i + 1 < Object.keys(waiter).length; i += 2) {
-      //Set the teams
-      await redis.hdel(redisKey + 'queue', Object.keys(waiter)[i], Object.keys(waiter)[i + 1])
-      //Need to publish the teams, with the values of waiter at index i and i+1
+    // On assemble les matchs, 2 joueurs par équipe
+    for (let i = 0; i + 1 < keys.length; i += 2) {
+      const playerId1 = keys[i]
+      const playerId2 = keys[i + 1]
+
+      // Suppression des joueurs de la file d’attente
+      await redis.hdel(redisKey + 'queue', playerId1, playerId2)
+
+      // Publication des équipes avec seulement les IDs des joueurs
       await redis.publish(
-        redisKey,
+        redisKey + 'mm',
         JSON.stringify({
-          teams: [waiter[i], waiter[i + 1]],
+          teams: [playerId1, playerId2],
         })
       )
     }

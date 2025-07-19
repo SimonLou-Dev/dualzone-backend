@@ -146,7 +146,7 @@ const registerRedisListeners = async () => {
     const mode = await GameMode.findOrFail(modeId)
     const teams: Group[] = []
     for (const team of JSON.parse(message).teams) {
-      teams.push(await Group.findOrFail(team.id))
+      teams.push(await Group.findOrFail(team))
     }
 
     await MatchMakingService.matchFound(mode, ...teams)
