@@ -55,8 +55,6 @@ export default class MatchMakingService {
     const team1WinProb: number = await RankService.calculateWinProbabilityOfTeamA(team1, team2)
     const team2WinProb = 1.0 - team1WinProb
 
-    console.log(team1WinProb, team2WinProb)
-
     team1.winProbability = team1WinProb
     team2.winProbability = team2WinProb
 

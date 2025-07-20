@@ -7,7 +7,6 @@ import NotifyUser, { NotificationType } from '#events/notify_user'
 import MatchWarmUp from '#events/Match/match_warm_up'
 import { BaseEvent, RoundEndEvent } from '../utils/game_events.js'
 import MatchUpdated from '#events/Match/match_updated'
-import MatchEnded from '#events/Match/match_ended'
 import RankService from '#services/rank_service'
 import MatchStated from '#events/Match/match_started'
 import MatchChossing from '#events/Match/match_choosing'
@@ -90,45 +89,14 @@ const registerRedisListeners = async () => {
 
     //Détecter le MapResultEvent (fin de la partie donc changer le status de la party)
     if (eventName === 'map_result' && party) {
-      const payload: RoundEndEvent = JSON.parse(message)
+      //const payload: RoundEndEvent = JSON.parse(message)
 
       //Finir la partie
       party.status = 'ENDED'
       party.ended = true
       await party.save()
 
-      //Calculer le rank des joueurs
-      await party.load('teams')
-      await party.load('mode')
-      await party.mode.load('game')
-
-      //Search in party teams for the team with team
-      const team1 = party.teams[0]
-      const team2 = party.teams[1]
-      await team1.load('players')
-      await team2.load('players')
-
-      const team1WinProb: number = team1.winProbability
-      const team2WinProb = team2.winProbability
-
-      for (const player of team1.players) {
-        const userRank = await RankService.getUserRank(player, party.mode.game)
-        userRank.rank = await RankService.calculateRank(
-          player,
-          party.mode.game,
-          payload.team1.score,
-          team1WinProb
-        )
-        await userRank.save()
-      }
-
-      for (const player of team2.players) {
-        const userRank = await RankService.getUserRank(player, party.mode.game)
-        userRank.rank = await RankService.calculateRank(player, party.mode.game, payload.team2.score, team2WinProb)
-        await userRank.save()
-      }
-
-      await MatchEnded.dispatch(party)
+      await RankService.updateRankAfeterMatch(party)
     }
   })
 
