@@ -1,0 +1,26 @@
+# Use postgres/example user/password credentials
+version: '3.9'
+
+services:
+  pgsql:
+    image: postgres
+    restart: always
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_PASSWORD: dualzone
+      POSTGRES_USER: dualzone
+      POSTGRES_DB: dualzone
+    volumes:
+      - postgres:/var/lib/postgresql/data
+  redis:
+    image: redis/redis-stack-server:6.2.6-v17
+    restart: always
+    ports:
+      - '6379:6379'
+    command: redis-server --save 20 1 --loglevel warning --requirepass dualzone --loadmodule /opt/redis-stack/lib/rejson.so
+    volumes:
+      - redis:/data
+volumes:
+  redis:
+  postgres:

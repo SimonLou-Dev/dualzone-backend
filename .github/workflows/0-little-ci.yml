@@ -1,0 +1,8 @@
+name: Node.js prod CI
+on:
+  push:
+    branches: ['feature/*', 'features/*', 'hotfix', 'issue-*']
+jobs:
+  test:
+    uses: ./.github/workflows/test.yml
+

@@ -1,4 +1,5 @@
 import { defineConfig } from '@adonisjs/core/app'
+import { BaseModel, CamelCaseNamingStrategy } from '@adonisjs/lucid/orm'
 
 // @ts-ignore
 // @ts-ignore
@@ -17,6 +18,7 @@ export default defineConfig({
     () => import('@adonisjs/lucid/commands'),
     () => import('@adonisjs/mail/commands'),
     () => import('adonis-resque/commands'),
+    () => import('@adonisjs/bouncer/commands'),
   ],
 
   /*
@@ -47,6 +49,7 @@ export default defineConfig({
     () => import('@adonisjs/ally/ally_provider'),
     () => import('adonis-resque/providers/resque_provider'),
     () => import('adonis-lucid-soft-deletes/provider'),
+    () => import('@adonisjs/bouncer/bouncer_provider'),
   ],
 
   /*
@@ -84,3 +87,5 @@ export default defineConfig({
     forceExit: false,
   },
 })
+
+BaseModel.namingStrategy = new CamelCaseNamingStrategy()

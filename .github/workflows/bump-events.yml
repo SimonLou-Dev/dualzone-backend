@@ -1,0 +1,36 @@
+name: Check & deploy API documentation
+permissions:
+  contents: read
+  pull-requests: write
+on:
+  workflow_call:
+jobs:
+  deploy-doc:
+    if: ${{ github.event_name == 'push' }}
+    name: Deploy event API documentation on Bump.sh
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Deploy API documentation
+        uses: bump-sh/github-action@v1
+        with:
+          doc: b6f6089b-db3e-4e48-956e-5ac3f76be037
+          token: QswCzxf2hLSm38FygGuui64fVy2cEjDF
+          file: doc/asyncapi.yaml
+  api-diff:
+    if: ${{ github.event_name == 'pull_request' }}
+    name: Check event API diff on Bump.sh
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Comment pull request with API diff
+        uses: bump-sh/github-action@v1
+        with:
+          doc: b6f6089b-db3e-4e48-956e-5ac3f76be037
+          token: QswCzxf2hLSm38FygGuui64fVy2cEjDF
+          file: doc/asyncapi.yaml
+          command: diff
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}

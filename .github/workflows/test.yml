@@ -1,0 +1,109 @@
+on:
+  workflow_call:
+jobs:
+  container-job:
+    # Containers must run in Linux based operating systems
+    runs-on: ubuntu-latest
+    # Docker Hub image that `container-job` executes in
+    container: node:22-bookworm-slim
+
+    # Service containers to run with `container-job`
+    services:
+      # Label used to access the service container
+      postgres:
+        # Docker Hub image
+        image: postgres
+        # Provide the password for postgres
+        env:
+          POSTGRES_PASSWORD: dualzone
+          POSTGRES_USER: dualzone
+          POSTGRES_DB: dualzone
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      redis:
+        image: redis:6.2-alpine
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install dependencies
+        run: yarn install --include=dev
+
+      - name: Run migrations
+        run: node ace migration:refresh --seed
+        env:
+          TZ: UTC
+          PORT: 3333
+          HOST: 127.0.0.1
+          LOG_LEVEL: info
+          APP_KEY: lnmE_sX6-itM87W_GjSyT7W6HvdXqUwq
+          NODE_ENV: test
+          DB_HOST: postgres
+          DB_PORT: 5432
+          DB_USER: dualzone
+          DB_PASSWORD: dualzone
+          DB_DATABASE: dualzone
+          SESSION_DRIVER: cookie
+          DRIVE_DISK: fs
+          AWS_ACCESS_KEY_ID: Tn3SHaLjg3jQYPBG
+          AWS_SECRET_ACCESS_KEY: HgXbnyXPaMPNLzTr9dKYr2H6tnZmEMoO
+          AWS_REGION: test
+          S3_BUCKET: dualzone
+          S3_ENDPOINT: http://localhost:9000
+          SMTP_HOST: testtest
+          SMTP_PORT: test
+          MAILGUN_API_KEY: test
+          MAILGUN_DOMAIN: test
+          REDIS_HOST: redis
+          REDIS_PORT: 6379
+          REDIS_PASSWORD: test
+          DISCORD_CLIENT_ID: test
+          DISCORD_CLIENT_SECRET: test
+          STEAM_API_KEY: test
+          STEAM_REALM_NAME: test
+          STEAM_CALLBACK_URL: http://localhost:3333/auth/steam/authenticate
+          FRONT_APP_URL: http://localhost:3000/
+
+      - name: Run tests
+        run: yarn test
+        env:
+          TZ: UTC
+          PORT: 3333
+          HOST: 127.0.0.1
+          LOG_LEVEL: info
+          APP_KEY: lnmE_sX6-itM87W_GjSyT7W6HvdXqUwq
+          NODE_ENV: test
+          DB_HOST: postgres
+          DB_PORT: 5432
+          DB_USER: dualzone
+          DB_PASSWORD: dualzone
+          DB_DATABASE: dualzone
+          SESSION_DRIVER: cookie
+          DRIVE_DISK: fs
+          AWS_ACCESS_KEY_ID: Tn3SHaLjg3jQYPBG
+          AWS_SECRET_ACCESS_KEY: HgXbnyXPaMPNLzTr9dKYr2H6tnZmEMoO
+          AWS_REGION: test
+          S3_BUCKET: dualzone
+          S3_ENDPOINT: http://localhost:9000
+          SMTP_HOST: testtest
+          SMTP_PORT: test
+          MAILGUN_API_KEY: test
+          MAILGUN_DOMAIN: test
+          REDIS_HOST: redis
+          REDIS_PORT: 6379
+          REDIS_PASSWORD: test
+          DISCORD_CLIENT_ID: test
+          DISCORD_CLIENT_SECRET: test
+          STEAM_API_KEY: test
+          STEAM_REALM_NAME: test
+          STEAM_CALLBACK_URL: http://localhost:3333/auth/steam/authenticate
+          FRONT_APP_URL: http://localhost:3000/

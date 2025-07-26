@@ -1,0 +1,31 @@
+node_modules
+build
+tmp
+doc
+.github
+
+# Secrets
+.env
+.env.local
+.env.production.local
+.env.development.local
+
+# Frontend assets compiled code
+public/assets
+
+# Build tools specific
+npm-debug.log
+yarn-error.log
+
+readme.md
+Dockerfile
+docker-compose.yml
+
+# Editors specific
+.fleet
+.idea
+.vscode
+
+# Platform specific
+.DS_Store
+.gitignore

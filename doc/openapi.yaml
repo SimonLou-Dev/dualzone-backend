@@ -1,0 +1,1382 @@
+openapi: 3.0.0
+info:
+  title: Sample API
+  description: Optional multiline or single-line description in [CommonMark](http://commonmark.org/help/) or HTML.
+  version: 0.1.9
+
+servers:
+  - url: http://api.example.com/v1
+    description: Optional server description, e.g. Main (production) server
+  - url: http://staging-api.example.com
+    description: Optional server description, e.g. Internal staging server for testing
+tags:
+  - name: users
+    description: Operations about user
+  - name: authentication
+    description: Operations about authentication
+  - name: tickets
+    description: Operations about tickets
+  - name: friends
+    description: Operations about friends
+paths:
+  /users:
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - users
+      summary: Returns a list of users.
+      responses:
+        '401':
+          $ref: '#/components/responses/401'
+        '402':
+          $ref: '#/components/responses/402'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '405':
+          $ref: '#/components/responses/405'
+        '5XX':
+          $ref: '#/components/responses/5XX'
+        '200': # status code
+          description: A JSON array of user names
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Users'
+  /users/{id}:
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - users
+      summary: Returns a user by ID.
+      parameters:
+        - name: id
+          in: path
+          description: ID of user to return
+          required: true
+          schema:
+            type: string
+          style: simple
+      responses:
+        '401':
+          $ref: '#/components/responses/401'
+        '402':
+          $ref: '#/components/responses/402'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '405':
+          $ref: '#/components/responses/405'
+        '5XX':
+          $ref: '#/components/responses/5XX'
+        '200':
+          description: A user object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+    put:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - users
+      summary: Updates a user by ID.
+      parameters:
+        - name: id
+          in: path
+          description: ID of user to update
+          required: true
+          schema:
+            type: string
+          style: simple
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '401':
+          $ref: '#/components/responses/401'
+        '402':
+          $ref: '#/components/responses/402'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '405':
+          $ref: '#/components/responses/405'
+        '5XX':
+          $ref: '#/components/responses/5XX'
+        '200':
+          description: A user object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+  /auth:
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - authentication
+      summary: Return current user and refreshed token if needed
+      responses:
+        '401':
+          $ref: '#/components/responses/401'
+        '402':
+          $ref: '#/components/responses/402'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '405':
+          $ref: '#/components/responses/405'
+        '5XX':
+          $ref: '#/components/responses/5XX'
+        '200': # status code
+          description: A JSON array of user names
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: object
+                    properties:
+                      value:
+                        type: string
+                        nullable: true
+                        example: ''
+                      type:
+                        type: string
+                        example: 'Bearer'
+                  permissions:
+                    $ref: '#/components/schemas/Permissions'
+                  user:
+                    $ref: '#/components/schemas/User'
+  /auth/steam:
+    get:
+      tags:
+        - authentication
+      summary: Redirect to steam authentication ( send client on them )
+      description: |
+        You need to send the client on this route to authenticate with steam
+        And then the client will be redirected to /auth/steam/authenticate
+        After that, the client will be redirected to the frontend with the token in the query
+      responses:
+        5XX:
+          $ref: '#/components/responses/5XX'
+        301:
+          description: Redirect to steam authentication
+          headers:
+            Location:
+              schema:
+                type: string
+                example: 'https://steamcommunity.com/openid/login?openid.claimed_id=http://specs.openid.net/auth/2.0/identifier_select&openid.identity=http://specs.openid.net/auth/2.0/identifier_select&openid.mode=checkid_setup&openid.ns=http://specs.openid.net/auth/2.0&openid.realm=http://localhost:3333&openid.return_to=http://localhost:3333/auth/steam/callback'
+  /auth/steam/authenticate:
+    get:
+      tags:
+        - authentication
+      summary: Callback steam authentication ( only to catch steam response )
+      description: |
+        This route is only to catch the steam response
+        And then the client will be redirected to the frontend with the token in the query
+      responses:
+        5XX:
+          $ref: '#/components/responses/5XX'
+        '301':
+          description: Url to frontend with token in query
+          headers:
+            Location:
+              schema:
+                type: string
+                example: 'http://localhost:3000/?token=oat_Mg.MlhIcENSYWhhVVgyckJpS056cGw3VDdNdDVURUhJSzl2MWVTRC1ZeTMxMTY1ODMyMTM'
+  /tickets/{id}:
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - tickets
+      summary: Returns a ticket by ID.
+      parameters:
+        - name: id
+          in: path
+          description: ID of ticket to return
+          required: true
+          schema:
+            type: string
+          style: simple
+      responses:
+        '401':
+          $ref: '#/components/responses/401'
+        '402':
+          $ref: '#/components/responses/402'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '405':
+          $ref: '#/components/responses/405'
+        '5XX':
+          $ref: '#/components/responses/5XX'
+        '200':
+          description: A ticket object with their relations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TicketWithAllRelation'
+    patch:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - tickets
+      summary: Used to close ticket.
+      parameters:
+        - name: id
+          in: path
+          description: ID of ticket to close
+          required: true
+          schema:
+            type: string
+          style: simple
+      responses:
+        '401':
+          $ref: '#/components/responses/401'
+        '402':
+          $ref: '#/components/responses/402'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '405':
+          $ref: '#/components/responses/405'
+        '5XX':
+          $ref: '#/components/responses/5XX'
+        '200':
+          description: A ticket object with their relations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TicketWithAllRelation'
+  /tickets/{id}/message:
+    put:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - tickets
+      summary: Add message to a ticket.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: 'My message'
+                  minLength: 10
+      parameters:
+        - name: id
+          in: path
+          description: ID of ticket
+          required: true
+          schema:
+            type: string
+          style: simple
+      responses:
+        '401':
+          $ref: '#/components/responses/401'
+        '402':
+          $ref: '#/components/responses/402'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '405':
+          $ref: '#/components/responses/405'
+        '422':
+          $ref: '#/components/responses/422'
+        '5XX':
+          $ref: '#/components/responses/5XX'
+        '200':
+          description: A ticket object with their relations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TicketWithAllRelation'
+  /tickets/{id}/add-member:
+    put:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - tickets
+      summary: Add Member to ticket.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+                  example: 'bcaa40fa-32fd-447b-9f6f-0eac1786e239'
+      parameters:
+        - name: id
+          in: path
+          description: ID of ticket
+          required: true
+          schema:
+            type: string
+          style: simple
+      responses:
+        '401':
+          $ref: '#/components/responses/401'
+        '402':
+          $ref: '#/components/responses/402'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '405':
+          $ref: '#/components/responses/405'
+        '422':
+          $ref: '#/components/responses/422'
+        '5XX':
+          $ref: '#/components/responses/5XX'
+        '200':
+          description: A ticket object with their relations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TicketWithAllRelation'
+  /tickets:
+    post:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - tickets
+      summary: Create new ticket.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: 'First message of ticket'
+                  minLength: 10
+                title:
+                  type: string
+                  example: 'Ticket name'
+                  minLength: 10
+                  maxLength: 200
+      responses:
+        '401':
+          $ref: '#/components/responses/401'
+        '402':
+          $ref: '#/components/responses/402'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '405':
+          $ref: '#/components/responses/405'
+        '422':
+          $ref: '#/components/responses/422'
+        '5XX':
+          $ref: '#/components/responses/5XX'
+        '200':
+          description: A ticket object with their relations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TicketWithAllRelation'
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - tickets
+      summary: List all ticket.
+      description: |
+        This route will return all ticket where the user is a member or all ticket opened if user is admin
+      responses:
+        '401':
+          $ref: '#/components/responses/401'
+        '402':
+          $ref: '#/components/responses/402'
+        '403':
+          $ref: '#/components/responses/403'
+        '405':
+          $ref: '#/components/responses/405'
+        '5XX':
+          $ref: '#/components/responses/5XX'
+        '200':
+          description: An array of ticket object with their relations
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tickets:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TicketWithAllRelation'
+  /friends:
+    post:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - friends
+      summary: Send friend request to user.
+      description: |
+        This route will send a friend request to the user
+        If you send a friend request to a user that already sent you a friend request, it will accept the friend request
+        If you have already sent a friend request to the user, it will be return 200 response
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+                  example: 'bcaa40fa-32fd-447b-9f6f-0eac1786e239'
+                  description: 'The user id of the user you want to send a friend request, must be a valid user id'
+      responses:
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '405':
+          $ref: '#/components/responses/405'
+        '422':
+          $ref: '#/components/responses/422'
+        '5XX':
+          $ref: '#/components/responses/5XX'
+        '200':
+          $ref: '#/components/responses/friendResponse'
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - friends
+      summary: List all your friends and friend request.
+      responses:
+        '401':
+          $ref: '#/components/responses/401'
+        '402':
+          $ref: '#/components/responses/402'
+        '403':
+          $ref: '#/components/responses/403'
+        '405':
+          $ref: '#/components/responses/405'
+        '5XX':
+          $ref: '#/components/responses/5XX'
+        '200':
+          $ref: '#/components/responses/friendResponse'
+  /friends/{id}:
+    patch:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - friends
+      summary: Accept friend request.
+      parameters:
+        - name: id
+          in: path
+          description: ID of user to accept friend request
+          required: true
+          schema:
+            type: string
+            example: 'bcaa40fa-32fd-447b-9f6f-0eac1786e239'
+          style: simple
+      responses:
+        '401':
+          $ref: '#/components/responses/401'
+        '402':
+          $ref: '#/components/responses/402'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '405':
+          $ref: '#/components/responses/405'
+        '5XX':
+          $ref: '#/components/responses/5XX'
+        '200':
+          $ref: '#/components/responses/friendResponse'
+    delete:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - friends
+      summary: Delete friend or refuse friend request.
+      parameters:
+        - name: id
+          in: path
+          description: ID of user to delete friend or refuse friend request
+          required: true
+          schema:
+            type: string
+            example: 'bcaa40fa-32fd-447b-9f6f-0eac1786e239'
+          style: simple
+      responses:
+        '401':
+          $ref: '#/components/responses/401'
+        '402':
+          $ref: '#/components/responses/402'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '405':
+          $ref: '#/components/responses/405'
+        '5XX':
+          $ref: '#/components/responses/5XX'
+        '200':
+          $ref: '#/components/responses/friendResponse'
+  /users/{userId}/sanctions:
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - sanctions
+      summary: Returns a list of users sanctions.
+      parameters:
+        - name: id
+          in: path
+          description: ID of user
+          required: true
+          schema:
+            type: string
+          style: simple
+      responses:
+        '401':
+          $ref: '#/components/responses/401'
+        '402':
+          $ref: '#/components/responses/402'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '405':
+          $ref: '#/components/responses/405'
+        '5XX':
+          $ref: '#/components/responses/5XX'
+        '200': # status code
+          description: A JSON array of user sanctions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Sanction'
+  /users/{userId}/sanctions/warn:
+    post:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - sanctions
+      summary: Append warn to user.
+      parameters:
+        - name: id
+          in: path
+          description: ID of user
+          required: true
+          schema:
+            type: string
+          style: simple
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason:
+                  type: string
+                  example: 'Cheating'
+                  minLength: 10
+                  maxLength: 200
+      responses:
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '405':
+          $ref: '#/components/responses/405'
+        '422':
+          $ref: '#/components/responses/422'
+        '5XX':
+          $ref: '#/components/responses/5XX'
+        '200':
+          description: Sanction newley created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sanction'
+  /users/{userId}/sanctions/ban:
+    post:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - sanctions
+      summary: Append ban to user.
+      parameters:
+        - name: id
+          in: path
+          description: ID of user
+          required: true
+          schema:
+            type: string
+          style: simple
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason:
+                  type: string
+                  example: 'Cheating'
+                  minLength: 10
+                  maxLength: 200
+                duration:
+                  type: integer
+                  example: 7
+                  description: 'Duration in days, 0 for permanent ban'
+      responses:
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '405':
+          $ref: '#/components/responses/405'
+        '422':
+          $ref: '#/components/responses/422'
+        '5XX':
+          $ref: '#/components/responses/5XX'
+        '200':
+          description: Sanction newley created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sanction'
+
+  /sanctions/{sanctionId}:
+    put:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - sanctions
+      parameters:
+        - name: id
+          in: path
+          description: ID of sanction
+          required: true
+          schema:
+            type: string
+          style: simple
+      summary: Update sanction
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason:
+                  type: string
+                  example: 'Cheating'
+                  minLength: 10
+                  maxLength: 200
+                duration:
+                  type: integer
+                  example: 7
+                  description: 'Duration in days, 0 for permanent ban'
+      responses:
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '405':
+          $ref: '#/components/responses/405'
+        '422':
+          $ref: '#/components/responses/422'
+        '5XX':
+          $ref: '#/components/responses/5XX'
+        '200':
+          description: Sanction updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sanction'
+    delete:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - sanctions
+      summary: Delete sanction
+      parameters:
+        - name: id
+          in: path
+          description: ID of sanction
+          required: true
+          schema:
+            type: string
+          style: simple
+      responses:
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '405':
+          $ref: '#/components/responses/405'
+        '422':
+          $ref: '#/components/responses/422'
+        '5XX':
+          $ref: '#/components/responses/5XX'
+        '200':
+          description: Sanction deleted
+  /modes/cs2:
+    get:
+      tags:
+        - modes
+      summary: Get all cs2 modes
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '401':
+          $ref: '#/components/responses/401'
+        '402':
+          $ref: '#/components/responses/402'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '405':
+          $ref: '#/components/responses/405'
+        '5XX':
+          $ref: '#/components/responses/5XX'
+        '200':
+          description: A JSON array of cs2 modes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 2
+                    name:
+                      type: string
+                      example: '1v1'
+  /match/enqueue/{modeId}:
+    post:
+      tags:
+        - match
+      summary: Enqueue a match
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - name: modeId
+          in: path
+          description: ID of the mode to enqueue
+          required: true
+          schema:
+            type: integer
+          style: simple
+      responses:
+        '401':
+          $ref: '#/components/responses/401'
+        '402':
+          $ref: '#/components/responses/402'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '405':
+          $ref: '#/components/responses/405'
+        '5XX':
+          $ref: '#/components/responses/5XX'
+        '200':
+          description: Successfully enqueued
+  /parties/{modeId}:
+    get:
+      tags:
+        - match
+      summary: List all parties of user
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - name: modeId
+          in: path
+          description: ID of the mode to enqueue
+          required: true
+          schema:
+            type: integer
+          style: simple
+        - name: page
+          in: query
+          description: Page number for pagination
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: row
+          in: query
+          description: Number of rows per page
+          required: false
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '401':
+          $ref: '#/components/responses/401'
+        '402':
+          $ref: '#/components/responses/402'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '405':
+          $ref: '#/components/responses/405'
+        '5XX':
+          $ref: '#/components/responses/5XX'
+        '200':
+          description: Successfully enqueued
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  meta:
+                    $ref: '#/components/schemas/MetaPagination'
+                  data:
+                    type: array
+                    items:
+                      allOf:
+                        - $ref: '#/components/schemas/Party'
+                        - type: object
+                          properties:
+                            teams:
+                              type: array
+                              items:
+                                allOf:
+                                  - $ref: '#/components/schemas/PartyTeam'
+                                  - type: object
+                                    properties:
+                                      players:
+                                        type: array
+                                        items:
+                                          $ref: '#/components/schemas/User'
+  /rank/{gameId}:
+    get:
+      tags:
+        - classement
+      summary: Get current user position
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - name: modeId
+          in: path
+          description: ID of the game to get rank
+          required: true
+          schema:
+            type: integer
+          style: simple
+      responses:
+        '401':
+          $ref: '#/components/responses/401'
+        '402':
+          $ref: '#/components/responses/402'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '405':
+          $ref: '#/components/responses/405'
+        '5XX':
+          $ref: '#/components/responses/5XX'
+        '200':
+          description: Successfully enqueued
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  elo:
+                    type: string
+                    example: 1500
+                  rank:
+                    type: integer
+                    example: 20
+                    description: 'Current position of the user in the game'
+                  total:
+                    type: integer
+                    example: 100
+                    description: 'Total number of players in the classement'
+  /ranks/{gameId}:
+    get:
+      tags:
+        - classement
+      summary: Get global classement of game
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - name: gameId
+          in: path
+          description: ID of the game
+          required: true
+          schema:
+            type: integer
+          style: simple
+        - name: page
+          in: query
+          description: Page number for pagination
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: row
+          in: query
+          description: Number of rows per page
+          required: false
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '401':
+          $ref: '#/components/responses/401'
+        '402':
+          $ref: '#/components/responses/402'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '405':
+          $ref: '#/components/responses/405'
+        '5XX':
+          $ref: '#/components/responses/5XX'
+        '200':
+          description: Successfully enqueued
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  meta:
+                    $ref: '#/components/schemas/MetaPagination'
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        user:
+                          $ref: '#/components/schemas/User'
+                        elo:
+                          type: string
+                          example: 1500
+                        rank:
+                          type: integer
+                          example: 20
+                          description: 'Current position of the user in the game'
+  /demo/force_found_match/{modeId}:
+    post:
+      tags:
+        - demo
+      summary: Force MM to create match with fake player
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - name: modeId
+          in: path
+          description: ID of the mode to enqueue
+          required: true
+          schema:
+            type: integer
+          style: simple
+      description:
+        This route is used to force the matchmaker to create a match with fake players
+        This is used for testing purpose only
+        This route is not available in production
+        The player muste be in queue (/match/enqueue/{modeId})
+      responses:
+        '401':
+          $ref: '#/components/responses/401'
+        '402':
+          $ref: '#/components/responses/402'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '405':
+          $ref: '#/components/responses/405'
+        '5XX':
+          $ref: '#/components/responses/5XX'
+        '200':
+          description: Successfully enqueued
+  /demo/force_resolve_mm/{modeId}:
+    post:
+      tags:
+        - demo
+      summary: Force MM to resolve all duo
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - name: modeId
+          in: path
+          description: ID of the mode
+          required: true
+          schema:
+            type: integer
+          style: simple
+      description:
+        This route is used to force the matchmaker to create pairs of players
+        (If there is odd number in queue, it will keep the last player in queue)
+        This is used for testing purpose only
+        This route is not available in production
+        The player muste be in queue (/match/enqueue/{modeId})
+      responses:
+        '401':
+          $ref: '#/components/responses/401'
+        '402':
+          $ref: '#/components/responses/402'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '405':
+          $ref: '#/components/responses/405'
+        '5XX':
+          $ref: '#/components/responses/5XX'
+        '200':
+          description: Successfully enqueued
+  /demo/force_end_match:
+    post:
+      tags:
+        - demo
+      summary: Force to end match
+      security:
+        - bearerAuth: [ ]
+      description:
+        This route end (current player) match, set random score and update elo
+        This is used for testing purpose only
+        This route is not available in production
+        The player must be in match
+      responses:
+        '401':
+          $ref: '#/components/responses/401'
+        '402':
+          $ref: '#/components/responses/402'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '405':
+          $ref: '#/components/responses/405'
+        '5XX':
+          $ref: '#/components/responses/5XX'
+        '200':
+          description: Successfully enqueued
+  /demo/force_warmup_start:
+    post:
+      tags:
+        - demo
+      summary: Force MM to start match
+      security:
+        - bearerAuth: [ ]
+      description:
+        This route "force" (current player) server to create and start a warmup (any server behind)
+        This is used for testing purpose only
+        This route is not available in production
+        The player must be in queue (/match/enqueue/{modeId})
+      responses:
+        '401':
+          $ref: '#/components/responses/401'
+        '402':
+          $ref: '#/components/responses/402'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '405':
+          $ref: '#/components/responses/405'
+        '5XX':
+          $ref: '#/components/responses/5XX'
+        '200':
+          description: Successfully enqueued
+  /demo/force_update_match_score:
+    post:
+      tags:
+        - demo
+      summary: Force MM to start match
+      security:
+        - bearerAuth: [ ]
+      description:
+        This route will update (current player match) score randomly
+        This is used for testing purpose only
+        This route is not available in production
+        The player must be in queue (/match/enqueue/{modeId})
+      responses:
+        '401':
+          $ref: '#/components/responses/401'
+        '402':
+          $ref: '#/components/responses/402'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '405':
+          $ref: '#/components/responses/405'
+        '5XX':
+          $ref: '#/components/responses/5XX'
+        '200':
+          description: Successfully enqueued
+components:
+  responses:
+    '401':
+      description: 'Unauthorized'
+    '402':
+      description: 'Payment required'
+    '403':
+      description: 'Forbidden'
+    '404':
+      description: 'Resource not found'
+    '405':
+      description: 'Invalid input (e.g. invalid fields, invalid format)'
+    '5XX':
+      description: 'Server error'
+    '422':
+      description: 'Validation error'
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    field:
+                      type: string
+                      example: 'email'
+                    message:
+                      type: string
+                      example: 'The email is already taken'
+                    rule:
+                      type: string
+                      example: 'unique'
+    friendResponse:
+      description: 'Response when you make request related to friend'
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              friends:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+              friendRequestsSent:
+                type: array
+                description: 'List of friend request sent by the user & need to be accepted by the other user'
+                items:
+                  $ref: '#/components/schemas/User'
+              friendRequestsReceived:
+                type: array
+                description: 'List of friend request received by the user & need to be accepted by the user'
+                items:
+                  $ref: '#/components/schemas/User'
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  schemas:
+    User:
+      properties:
+        id:
+          type: string
+          example: 'bcaa40fa-32fd-447b-9f6f-0eac1786e239'
+        pseudo:
+          type: string
+          example: 'JohnDoe'
+        steamId:
+          type: number
+          example: 76561198000000000
+        userImage:
+          type: string
+          example: 'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/00/'
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    Users:
+      type: array
+      items:
+        $ref: '#/components/schemas/User'
+    Sanction:
+      properties:
+        id:
+          type: integer
+          example: 1
+        type:
+          type: number
+          enum: 0, 1
+          description: '0: Warning, 1: Ban'
+        reason:
+            type: string
+            example: 'Cheating'
+        duration:
+            type: integer
+            example: 7
+            description: 'Duration in days'
+        admin:
+          $ref: '#/components/schemas/User'
+        user:
+          $ref: '#/components/schemas/User'
+    Party:
+      properties:
+        id:
+          type: string
+          example: "bcaa40fa-32fd-447b-9f6f-0eac1786e239"
+        modeId:
+          type: integer
+          example: 1
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        partyTime:
+          type: string
+          format: date-time
+        ended:
+          type: boolean
+          example: false
+        status:
+          type: string
+          enum: 'ENDED, WARMUP, PLAYING, WAITING'
+          example: 'WAITING'
+    PartyTeam:
+        properties:
+            id:
+              type: string
+              example: "bcaa40fa-32fd-447b-9f6f-0eac1786e239"
+            partyId:
+              type: string
+              example: "bcaa40fa-32fd-447b-9f6f-0eac1786e239"
+            score:
+              type: integer
+              example: 0
+            winProbability:
+              type: number
+              example: 0.5
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+    Permission:
+      example: 'user:read'
+    Permissions:
+      type: array
+      items:
+        $ref: '#/components/schemas/Permission'
+    Ticket:
+      properties:
+        id:
+          type: integer
+          example: 164
+        title:
+          type: string
+          example: 'My ticket'
+        terminated:
+          type: boolean
+          example: false
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    TicketMessage:
+      properties:
+        id:
+          type: integer
+          example: 164
+        message:
+          type: string
+          example: 'My ticket'
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    TicketWithAllRelation:
+      allOf:
+        - $ref: '#/components/schemas/Ticket'
+        - type: object
+          properties:
+            sender:
+              $ref: '#/components/schemas/User'
+            members:
+              type: array
+              items:
+                $ref: '#/components/schemas/User'
+            messages:
+              type: array
+              items:
+                allOf:
+                  - $ref: '#/components/schemas/TicketMessage'
+                  - type: object
+                    properties:
+                      sender:
+                        $ref: '#/components/schemas/User'
+    MetaPagination:
+        type: object
+        properties:
+          total:
+            type: integer
+            example: 100
+          perPage:
+            type: integer
+            example: 10
+          currentPage:
+            type: integer
+            example: 1
+          lastPage:
+            type: integer
+            example: 10
+          firstPageUrl:
+            type: string
+            example: 'http://localhost:3333/api/v1/tickets?page=1'
+          lastPageUrl:
+            type: string
+            example: 'http://localhost:3333/api/v1/tickets?page=10'
+          nextPageUrl:
+            type: string
+            example: 'http://localhost:3333/api/v1/tickets?page=2'
+          prevPageUrl:
+            type: string
+            example: 'http://localhost:3333/api/v1/tickets?page=0'
