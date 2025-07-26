@@ -1,135 +1,32 @@
-# 🚀 **Guide de Développement - Backend Docker** 🚀
-
-## /!\ **Avant chaque push /!\**
-
-Surtout si c'est le dernier de votre **feature** ou **hotfix**, **les commandes de la partie [Lint](#Lint) sont obligatoires**.
-
-### 🔴 **Si c'est le dernier commit, tous les tests doivent passer avant le push**.
+# DUALZONE- Backend du site
+## Plateforme de jeu compétitif 1v1 et 2v2
+### Projet annuel 2024-2025 ESGI B3 
 
 ---
 
-## 🛠 **Liste des Branches** 🛠
+# Contributeurs
 
-- **`dev`** : Branche globale de développement.
-- **`feature/`** : Ajout d'une nouvelle fonctionnalité (environnement de développement).
-- **`issue-`** : Fix d'un bug (environnement de développement).
-- **`hotfix`** : Création d'un hotfix (environnement de développement).
-- **`testing`** : Environnement de tests (EVO).
-- **`prod`** : Plateforme en production.
+- [Bidet Simon](https://github.com/SimonLou-Dev)
+- [Renault Rémi](https://github.com/gruv0o)
+- [Anton MAZANY](https://github.com/ManMazFR)
 
----
+# Présentation générale
 
-## 🌱 **Travailler sur une nouvelle feature** 🌱
+Cette plateforme vise à offrir un environnement de jeu compétitif sécurisé et performant pour des matchs 1v1 et 2v2 de Counter-Strike. Inspirée par des plateformes reconnues comme Faceit et ESEA, elle met l'accent sur la sécurité, la modération et la performance. Elle répond à la demande croissante de joueurs cherchant des environnements bien régulés et sécurisés.
 
-### 1. **Création de la branche** :
+# Description
 
-Pour créer et basculer sur une nouvelle branche pour une fonctionnalité :
+Le backend du site est développé avec le framework AdonisJS en TypeScript. Il est responsable du système d'élo, de l'allocation des serveurs de jeux, et de la connexion des joueurs via Steam. Ce dépôt contient toute la logique métier et les services nécessaires pour soutenir ces fonctionnalités.
 
-```bash
-git branch feature/nomDeLaFeature
-git switch feature/nomDeLaFeature
-```
+# Technologies utilisées
 
-### 2. Push de la branche :
+- Node.js : Pour l'exécution du code backend.
+- AdonisJS : Un framework Node.js open-source et français, choisi pour sa structure robuste et sa philosophie orientée développeur.
+- PostgreSQL : Pour la persistance des données structurées.
+- Redis : Pour le cache serveur et la gestion des événements.
 
-Lorsque vous avez terminé le développement de votre fonctionnalité, poussez votre branche vers le dépôt distant :
+# Fonctionnalités principales
 
-```bash
-git push -u origin feature/nomDeLaFeature
-```
-
-### 3. Récupération d'une branche distante :
-
-Pour récupérer une branche distante et vous y placer :
-
-```bash
-git fetch origin
-git checkout feature/nomDeLaFeature
-git pull
-```
-
----
-
-## 🧰 Outils de Développement 🧰
-### Installation de Node.js :
-Assurez-vous d'avoir une version de Node.js > v22.0.0. Téléchargez la dernière version stable depuis Node.js.
-
-### Installation de Yarn :
-Installez Yarn globalement en utilisant npm :
-```bash
-npm install --global yarn
-```
----
-## ⚙️ Gestion des Dépendances ⚙️
-### 1. Installation des dépendances
-#### Dépendances de développement :
-```bash
-yarn install --include=dev
-```
-#### Dépendances de production :
-```bash
-yarn install
-```
----
-
-## 🔄 Lancer l'environnement Docker de développement  Frontend 🔄
-### Base de données et autres services :
-
-Lancez tous les services nécessaires et le backend en utilisant Docker Compose (fichier `.dev.yml`) :
-```bash
-docker compose -f ./docker-compose.dev.yml up -d
-```
-
----
-
-## 🚀 Lancer l'environnement Docker de développement  Backend 🚀
-### Base de données et autres services :
-
-Lancez tous les services nécessaires pour le backend en utilisant Docker Compose (fichier `.dev-back.yml`) :
-```bash
-docker compose -f ./docker-compose.dev-back.yml up -d
-```
-Cela démarre les conteneurs pour la base de données et les autres services de développement.
-### Lancer le serveur de développement :
-
-Une fois les services Docker démarrés, vous pouvez lancer le serveur de développement :
-```bash
-yarn dev
-```
----
-## 🧪 Tests 🧪
-### Lancer les tests
-
-Pour exécuter les tests de votre projet, utilisez :
-```bash
-yarn run test
-```
-Cela va exécuter les tests automatisés pour vérifier que votre code fonctionne comme prévu.
----
-
-## ⚡ Linting & Formatage du Code ⚡
-###  Linting (avec ESLint)
-
-Pour vérifier la qualité de votre code et l'adhésion aux règles ESLint, exécutez :
-```bash
-yarn run lint --fix
-```
-
-Cela corrigera automatiquement les erreurs de style lorsque c'est possible.
-### Formatage du code (avec Prettier)
-
-Pour formater le code selon les règles définies dans votre projet, exécutez :
-```bash
-yarn run format
-```
-## Vérification des Types (TypeScript)
-Vérifier les types avec la commande suivante :
-```bash
-yarn run typecheck
-```
----
-## ⚠️ Bonnes Pratiques de Développement ⚠️
-
-1. **Gardez votre code propre et bien formaté**. Utilisez les commandes de linting et de formatage avant de chaque push.
-2. **Vérifiez les tests** avant de pousser des changements. Cela garantit que vous ne poussez que des modifications fiables et fonctionnelles.
-
+- Système d'élo : Un système de classement des joueurs basé sur la méthode Elo, permettant de comparer les performances.
+- Allocation des serveurs de jeux : Logique pour attribuer des serveurs de jeux aux joueurs en fonction du matchmaking.
+- Authentification via Steam : Utilisation de OAuth de Steam pour l'authentification sécurisée des joueurs.
